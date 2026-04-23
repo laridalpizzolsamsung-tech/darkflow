@@ -498,11 +498,12 @@ select option{background:var(--bg3)}
     <div class="panel">
       <div class="panel-header"><div class="panel-title">CHAVES DE API</div></div>
       <div class="panel-body">
-        <div class="setting-row"><div><div class="setting-label">Gemini API Key</div><div class="setting-desc">aistudio.google.com → Get API Key</div></div><input type="password" id="cfGemini" class="setting-input" placeholder="AIza..."></div>
-        <div class="setting-row"><div><div class="setting-label">ElevenLabs API Key</div><div class="setting-desc">elevenlabs.io → My Account → API Keys</div></div><input type="password" id="cfEleven" class="setting-input" placeholder="sk_..."></div>
-        <div class="setting-row"><div><div class="setting-label">Pexels API Key</div><div class="setting-desc">pexels.com/api — gratuito</div></div><input type="password" id="cfPexels" class="setting-input" placeholder="..."></div>
-        <div class="setting-row"><div><div class="setting-label">Pixabay API Key</div><div class="setting-desc">pixabay.com/api/docs — gratuito</div></div><input type="password" id="cfPixabay" class="setting-input" placeholder="..."></div>
-        <div class="setting-row"><div><div class="setting-label">YouTube API Key</div><div class="setting-desc">Google Cloud Console → YouTube Data API v3</div></div><input type="password" id="cfYT" class="setting-input" placeholder="AIza..."></div>
+        <div class="setting-row"><div><div class="setting-label">Claude API Key ✍️</div><div class="setting-desc">console.anthropic.com → API Keys — roteiros, títulos, análises</div></div><input type="password" id="cfClaude" class="setting-input" placeholder="sk-ant-..."></div>
+        <div class="setting-row"><div><div class="setting-label">Gemini API Key 🎙️🖼️</div><div class="setting-desc">Google Cloud Console → voz TTS e geração de imagens</div></div><input type="password" id="cfGemini" class="setting-input" placeholder="AIza..."></div>
+        <div class="setting-row"><div><div class="setting-label">ElevenLabs API Key 🎙️</div><div class="setting-desc">elevenlabs.io → My Account → API Keys — voz premium</div></div><input type="password" id="cfEleven" class="setting-input" placeholder="sk_..."></div>
+        <div class="setting-row"><div><div class="setting-label">Pexels API Key 🎬</div><div class="setting-desc">pexels.com/api — vídeos gratuitos</div></div><input type="password" id="cfPexels" class="setting-input" placeholder="..."></div>
+        <div class="setting-row"><div><div class="setting-label">Pixabay API Key 🎬</div><div class="setting-desc">pixabay.com/api/docs — vídeos gratuitos</div></div><input type="password" id="cfPixabay" class="setting-input" placeholder="..."></div>
+        <div class="setting-row"><div><div class="setting-label">YouTube API Key 📤</div><div class="setting-desc">Google Cloud Console → YouTube Data API v3</div></div><input type="password" id="cfYT" class="setting-input" placeholder="AIza..."></div>
       </div>
     </div>
     <div class="panel" style="margin-top:16px">
@@ -558,10 +559,14 @@ let st={vid:0,rot:0,nar:0,pub:0};
 
 // CONFIG
 const LS=(k)=>localStorage.getItem('df_'+k)||'';
-const cfg=()=>({gemini:LS('gemini'),eleven:LS('eleven'),pexels:LS('pexels'),pixabay:LS('pixabay'),yt:LS('yt'),canal:LS('canal'),nicho:LS('nicho'),idioma:LS('idioma')});
+const cfg=()=>({claude:LS('claude'),gemini:LS('gemini'),eleven:LS('eleven'),pexels:LS('pexels'),pixabay:LS('pixabay'),yt:LS('yt'),canal:LS('canal'),nicho:LS('nicho'),idioma:LS('idioma')});
 
 function saveConfig(){
-  ['gemini','eleven','pexels','pixabay'].forEach(k=>{const v=document.getElementById('cf'+k.charAt(0).toUpperCase()+k.slice(1));if(v)localStorage.setItem('df_'+k,v.value.trim())});
+  localStorage.setItem('df_claude',document.getElementById('cfClaude').value.trim());
+  localStorage.setItem('df_gemini',document.getElementById('cfGemini').value.trim());
+  localStorage.setItem('df_eleven',document.getElementById('cfEleven').value.trim());
+  localStorage.setItem('df_pexels',document.getElementById('cfPexels').value.trim());
+  localStorage.setItem('df_pixabay',document.getElementById('cfPixabay').value.trim());
   localStorage.setItem('df_yt',document.getElementById('cfYT').value.trim());
   localStorage.setItem('df_canal',document.getElementById('cfCanal').value.trim());
   localStorage.setItem('df_nicho',document.getElementById('cfNicho').value);
@@ -571,6 +576,7 @@ function saveConfig(){
 
 function loadConfig(){
   const c=cfg();
+  document.getElementById('cfClaude').value=c.claude;
   document.getElementById('cfGemini').value=c.gemini;
   document.getElementById('cfEleven').value=c.eleven;
   document.getElementById('cfPexels').value=c.pexels;
@@ -794,11 +800,24 @@ function fmtSRT(s){
 }
 
 // ROTEIRO
+async function callClaude(prompt){
+  const c=cfg();
+  if(!c.claude)throw new Error('Adicione a Claude API Key em Configurações');
+  const r=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':c.claude,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-opus-4-5',max_tokens:4000,messages:[{role:'user',content:prompt}]})
+  });
+  const d=await r.json();
+  if(d.error)throw new Error(d.error.message);
+  return d.content?.[0]?.text||'';
+}
+
 async function gerarRoteiro(){
   const tema=document.getElementById('rotTema').value.trim();
   if(!tema){setSt('rotSt','Digite o tema','error');return;}
   const c=cfg();
-  if(!c.gemini){setSt('rotSt','Adicione a Gemini API Key em Configurações','error');return;}
+  if(!c.claude){setSt('rotSt','Adicione a Claude API Key em Configurações','error');return;}
   const btn=document.getElementById('btnRot'); btn.disabled=true; btn.textContent='⏳ Gerando...';
   setSt('rotSt','Gerando roteiro com IA...','loading');
   document.getElementById('rotOut').value='';
@@ -827,14 +846,7 @@ Regras importantes:
 
 Escreva o roteiro completo:`;
   try{
-    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${c.gemini}`,{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})
-    });
-    const d=await r.json();
-    if(d.error)throw new Error(d.error.message);
-    const text=d.candidates?.[0]?.content?.parts?.[0]?.text;
-    if(!text)throw new Error('Nenhum texto retornado');
+    const text=await callClaude(prompt);
     document.getElementById('rotOut').value=text;
     document.getElementById('rotOut').readOnly=false;
     setSt('rotSt','Roteiro gerado! Você pode editar antes de usar.','success');
@@ -906,20 +918,14 @@ function loadYTThumb(input){
 }
 async function gerarMetaIA(){
   const c=cfg();
-  if(!c.gemini){notify('Adicione a Gemini API Key em Configurações','error');return;}
-  const tema=document.getElementById('ytTit').value||'canal dark';
+  if(!c.claude){notify('Adicione a Claude API Key em Configurações','error');return;}
+  const tema=document.getElementById('ytTit').value||'canal de espiritualidade';
   setSt('pubSt','Gerando com IA...','loading');
-  const prompt=`Crie metadados SEO para YouTube para canal dark com tema: "${tema}". Retorne JSON com "titulo"(máx 80 chars), "descricao"(3 parágrafos + hashtags), "tags"(15 tags separadas por vírgula). SOMENTE JSON.`;
+  const prompt=`Crie metadados SEO otimizados para YouTube para um vídeo com tema: "${tema}". Retorne JSON com "titulo"(máx 80 chars, gancho forte), "descricao"(3 parágrafos envolventes + hashtags relevantes), "tags"(15 tags separadas por vírgula). SOMENTE JSON sem markdown.`;
   try{
-    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${c.gemini}`,{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})
-    });
-    const d=await r.json();
-    if(d.error)throw new Error(d.error.message);
-    let text=d.candidates?.[0]?.content?.parts?.[0]?.text||'';
-    text=text.replace(/```json|```/g,'').trim();
-    const p=JSON.parse(text);
+    const text=await callClaude(prompt);
+    const clean=text.replace(/```json|```/g,'').trim();
+    const p=JSON.parse(clean);
     document.getElementById('ytTit').value=p.titulo||'';
     document.getElementById('ytDesc').value=p.descricao||'';
     document.getElementById('ytTags').value=p.tags||'';
@@ -929,17 +935,12 @@ async function gerarMetaIA(){
   }catch(e){setSt('pubSt','Erro: '+e.message,'error');}
 }
 async function gerarMetaComRot(rot){
-  const c=cfg(); if(!c.gemini)return;
-  const prompt=`Baseado neste roteiro de canal dark, crie metadados YouTube. JSON com "titulo", "descricao", "tags". Roteiro: ${rot.substring(0,500)}... SOMENTE JSON.`;
+  const c=cfg(); if(!c.claude)return;
+  const prompt=`Baseado neste roteiro, crie metadados YouTube. JSON com "titulo", "descricao", "tags". Roteiro: ${rot.substring(0,500)}... SOMENTE JSON sem markdown.`;
   try{
-    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${c.gemini}`,{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})
-    });
-    const d=await r.json();
-    let text=d.candidates?.[0]?.content?.parts?.[0]?.text||'';
-    text=text.replace(/```json|```/g,'').trim();
-    const p=JSON.parse(text);
+    const text=await callClaude(prompt);
+    const clean=text.replace(/```json|```/g,'').trim();
+    const p=JSON.parse(clean);
     document.getElementById('ytTit').value=p.titulo||'';
     document.getElementById('ytDesc').value=p.descricao||'';
     document.getElementById('ytTags').value=p.tags||'';
@@ -958,19 +959,13 @@ async function analisarCanal(){
   const url=document.getElementById('canalUrl').value.trim();
   if(!url){notify('Digite a URL do canal','error');return;}
   const c=cfg();
-  if(!c.gemini){notify('Adicione a Gemini API Key em Configurações','error');return;}
+  if(!c.claude){notify('Adicione a Claude API Key em Configurações','error');return;}
   document.getElementById('canalRes').innerHTML='<div class="status-bar loading"><div class="spinner"></div>Analisando canal com IA...</div>';
-  const prompt=`Analise o canal do YouTube: ${url}. Retorne JSON com: "nome", "nicho", "pontosFortes"(array), "sugestoes"(array), "temasSugeridos"(array de 5 temas para novos vídeos). SOMENTE JSON.`;
+  const prompt=`Analise o canal do YouTube: ${url}. Com base no nome e URL, sugira uma análise estratégica. Retorne JSON com: "nome", "nicho", "pontosFortes"(array de 3), "sugestoes"(array de 3), "temasSugeridos"(array de 5 temas para novos vídeos). SOMENTE JSON sem markdown.`;
   try{
-    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${c.gemini}`,{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})
-    });
-    const d=await r.json();
-    if(d.error)throw new Error(d.error.message);
-    let text=d.candidates?.[0]?.content?.parts?.[0]?.text||'';
-    text=text.replace(/```json|```/g,'').trim();
-    const p=JSON.parse(text);
+    const text=await callClaude(prompt);
+    const clean=text.replace(/```json|```/g,'').trim();
+    const p=JSON.parse(clean);
     document.getElementById('canalRes').innerHTML=`
       <div class="panel">
         <div class="panel-header"><div class="panel-title">📊 ${p.nome||url}</div></div>
