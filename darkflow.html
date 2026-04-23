@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<!-- saved from url=(0046)file:///C:/Users/esyah/Downloads/darkflow.html -->
+<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DarkFlow — Plataforma de Produção</title>
+<link href="./darkflow_files/css2" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0b;--bg2:#111113;--bg3:#1a1a1e;--bg4:#222228;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--text:#f0f0f0;--text2:#888;--text3:#555;--accent:#e8ff47;--accent2:#c8e000;--red:#ff4d4d;--green:#4dff91;--blue:#4d9fff;--font:'Syne',sans-serif;--mono:'DM Mono',monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden}
+.sidebar{position:fixed;left:0;top:0;width:220px;height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100}
+.logo{padding:24px 20px 20px;border-bottom:1px solid var(--border)}
+.logo-text{font-size:20px;font-weight:800;letter-spacing:-0.5px}
+.logo-text span{color:var(--accent)}
+.logo-sub{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:2px;letter-spacing:.1em}
+.nav{padding:16px 12px;flex:1;overflow-y:auto}
+.nav-section{font-size:10px;color:var(--text3);font-family:var(--mono);letter-spacing:.12em;padding:8px 8px 6px;margin-top:8px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text2);transition:all .15s;margin-bottom:2px}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:var(--bg4);color:var(--accent)}
+.nav-item .icon{width:16px;text-align:center;font-size:14px}
+.nav-badge{margin-left:auto;font-size:9px;font-family:var(--mono);background:var(--accent);color:#000;padding:2px 6px;border-radius:4px;font-weight:500}
+.sidebar-bottom{padding:16px;border-top:1px solid var(--border)}
+.api-status{font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:8px}
+.api-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:6px}
+.api-dot.ok{background:var(--green);box-shadow:0 0 6px var(--green)}
+.api-dot.off{background:var(--text3)}
+.main{margin-left:220px;min-height:100vh}
+.topbar{height:56px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:50}
+.topbar-title{font-size:15px;font-weight:700}
+.topbar-actions{display:flex;gap:10px;align-items:center}
+.btn{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s;border:none;letter-spacing:.02em}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2)}
+.btn-ghost:hover{color:var(--text);background:var(--bg3)}
+.btn-accent{background:var(--accent);color:#000}
+.btn-accent:hover{background:var(--accent2)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.content{padding:28px}
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.panel-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.panel-title{font-size:13px;font-weight:700;letter-spacing:.02em}
+.panel-sub{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:2px}
+.panel-body{padding:20px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.label{font-size:11px;color:var(--text2);font-family:var(--mono);margin-bottom:6px;letter-spacing:.06em}
+textarea,input[type=text],input[type=password],input[type=datetime-local],select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:13px;padding:10px 14px;transition:border .15s;outline:none;resize:vertical}
+textarea:focus,input:focus,select:focus{border-color:var(--accent)}
+select option{background:var(--bg3)}
+.tabs{display:flex;gap:4px;background:var(--bg3);padding:4px;border-radius:8px;margin-bottom:16px}
+.tab{flex:1;padding:7px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;text-align:center;color:var(--text3);transition:all .15s;font-family:var(--font)}
+.tab.active{background:var(--bg4);color:var(--accent)}
+.video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:12px}
+.video-thumb{aspect-ratio:16/9;background:var(--bg3);border-radius:8px;border:1px solid var(--border);overflow:hidden;cursor:pointer;position:relative;transition:all .15s}
+.video-thumb:hover{border-color:var(--accent);transform:scale(1.02)}
+.video-thumb img,.video-thumb video{width:100%;height:100%;object-fit:cover}
+.video-thumb .add-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);opacity:0;transition:opacity .15s;font-size:22px}
+.video-thumb:hover .add-btn{opacity:1}
+.video-thumb .src-badge{position:absolute;top:4px;left:4px;font-size:9px;font-family:var(--mono);background:rgba(0,0,0,.8);padding:2px 6px;border-radius:4px;color:var(--accent)}
+.timeline-wrap{background:var(--bg3);border-radius:8px;border:1px solid var(--border);min-height:100px;padding:12px}
+.timeline-empty{height:76px;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:12px;font-family:var(--mono);border:1px dashed var(--border2);border-radius:6px}
+.timeline-clips{display:flex;gap:6px;flex-wrap:wrap}
+.timeline-clip{height:64px;border-radius:6px;overflow:hidden;position:relative;border:1px solid var(--border2);cursor:pointer;flex-shrink:0;transition:all .15s;width:96px}
+.timeline-clip:hover{border-color:var(--accent)}
+.timeline-clip img,.timeline-clip video{height:100%;width:100%;object-fit:cover}
+.timeline-clip .clip-del{position:absolute;top:2px;right:2px;background:rgba(255,77,77,.9);border-radius:4px;width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:10px;opacity:0;transition:opacity .15s;z-index:2}
+.timeline-clip:hover .clip-del{opacity:1}
+.voice-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 14px;cursor:pointer;transition:all .15s;margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.voice-card:hover{border-color:var(--border2)}
+.voice-card.selected{border-color:var(--accent);background:rgba(232,255,71,.05)}
+.voice-avatar{width:36px;height:36px;border-radius:50%;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.voice-name{font-size:13px;font-weight:600}
+.voice-desc{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:2px}
+.voice-lang{margin-left:auto;font-size:10px;font-family:var(--mono);background:var(--bg4);padding:3px 8px;border-radius:4px;color:var(--text2)}
+.audio-player{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.play-btn{width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;flex-shrink:0;border:none;transition:all .15s}
+.play-btn:hover{background:var(--accent2);transform:scale(1.05)}
+.progress-bar{flex:1;height:4px;background:var(--bg4);border-radius:2px;cursor:pointer}
+.progress-fill{height:100%;background:var(--accent);border-radius:2px;width:0%;transition:width .1s}
+.time-label{font-size:11px;font-family:var(--mono);color:var(--text3);flex-shrink:0}
+.stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.stat-val{font-size:26px;font-weight:800;color:var(--accent)}
+.stat-lbl{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:2px}
+.status-bar{padding:10px 14px;border-radius:8px;font-size:12px;font-family:var(--mono);display:flex;align-items:center;gap:8px;margin-top:12px}
+.status-bar.info{background:rgba(77,159,255,.1);color:var(--blue);border:1px solid rgba(77,159,255,.2)}
+.status-bar.success{background:rgba(77,255,145,.1);color:var(--green);border:1px solid rgba(77,255,145,.2)}
+.status-bar.error{background:rgba(255,77,77,.1);color:var(--red);border:1px solid rgba(255,77,77,.2)}
+.status-bar.loading{background:rgba(232,255,71,.08);color:var(--accent);border:1px solid rgba(232,255,71,.15)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{width:14px;height:14px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+.upload-zone{border:2px dashed var(--border2);border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:all .2s}
+.upload-zone:hover,.upload-zone.dragover{border-color:var(--accent);background:rgba(232,255,71,.04)}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:none}
+.setting-label{font-size:13px;font-weight:600}
+.setting-desc{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:2px}
+.setting-input{width:280px}
+.page{display:none}
+.page.active{display:block}
+.notif{position:fixed;bottom:24px;right:24px;z-index:9999;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:12px 18px;font-size:13px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,.4);transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1)}
+.notif.show{transform:translateY(0);opacity:1}
+.notif.success{border-color:rgba(77,255,145,.3)}
+.notif.error{border-color:rgba(255,77,77,.3)}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-text">Dark<span>Flow</span></div>
+    <div class="logo-sub">PLATAFORMA DE PRODUÇÃO</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-section">PRINCIPAL</div>
+    <div class="nav-item active" data-page="dashboard"><span class="icon">⚡</span>Dashboard</div>
+    <div class="nav-item" data-page="producao"><span class="icon">🎬</span>Produção de Vídeo<span class="nav-badge">HOJE</span></div>
+    <div class="nav-section">CONTEÚDO</div>
+    <div class="nav-item" data-page="roteiro"><span class="icon">✍️</span>Roteiro IA</div>
+    <div class="nav-item" data-page="voz"><span class="icon">🎙️</span>Narração</div>
+    <div class="nav-item" data-page="thumbnail"><span class="icon">🖼️</span>Thumbnail</div>
+    <div class="nav-section">DISTRIBUIÇÃO</div>
+    <div class="nav-item" data-page="publicar"><span class="icon">📤</span>Publicar no YouTube</div>
+    <div class="nav-item" data-page="planner"><span class="icon">📅</span>Planner</div>
+    <div class="nav-section">ANÁLISE</div>
+    <div class="nav-item" data-page="canal"><span class="icon">📊</span>Analisar Canal</div>
+    <div class="nav-section">CONFIG</div>
+    <div class="nav-item" data-page="config"><span class="icon">⚙️</span>Configurações</div>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="api-status"><span class="api-dot off" id="dotGemini"></span>Gemini API</div>
+    <div class="api-status"><span class="api-dot off" id="dotEleven"></span>ElevenLabs</div>
+    <div class="api-status"><span class="api-dot ok"></span>Pexels / Pixabay</div>
+  </div>
+</aside>
+
+<main class="main">
+
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div class="topbar"><div class="topbar-title">Dashboard</div><div class="topbar-actions"><button class="btn btn-accent" onclick="nav(&#39;producao&#39;)">+ Novo Vídeo</button></div></div>
+  <div class="content">
+    <div class="stat-cards">
+      <div class="stat-card"><div class="stat-val" id="ds-vid">0</div><div class="stat-lbl">clipes na timeline</div></div>
+      <div class="stat-card"><div class="stat-val" id="ds-rot">0</div><div class="stat-lbl">roteiros gerados</div></div>
+      <div class="stat-card"><div class="stat-val" id="ds-nar">0</div><div class="stat-lbl">narrações geradas</div></div>
+      <div class="stat-card"><div class="stat-val" id="ds-pub">0</div><div class="stat-lbl">publicados YT</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><div><div class="panel-title">INÍCIO RÁPIDO</div><div class="panel-sub">O que você quer fazer agora?</div></div></div>
+      <div class="panel-body">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+          <div class="voice-card" onclick="nav(&#39;producao&#39;)" style="flex-direction:column;align-items:flex-start;gap:8px"><div style="font-size:24px">🎬</div><div class="voice-name">Montar Vídeo</div><div class="voice-desc">Upload + busca + timeline + narração</div></div>
+          <div class="voice-card" onclick="nav(&#39;roteiro&#39;)" style="flex-direction:column;align-items:flex-start;gap:8px"><div style="font-size:24px">✍️</div><div class="voice-name">Criar Roteiro</div><div class="voice-desc">Gerar roteiro com IA para canal dark</div></div>
+          <div class="voice-card" onclick="nav(&#39;publicar&#39;)" style="flex-direction:column;align-items:flex-start;gap:8px"><div style="font-size:24px">📤</div><div class="voice-name">Publicar no YouTube</div><div class="voice-desc">Título, descrição, tags e agendamento</div></div>
+        </div>
+        <div style="margin-top:16px;padding:14px;background:var(--bg3);border-radius:8px;font-size:12px;font-family:var(--mono);color:var(--text3);line-height:1.8">
+          🔑 <strong style="color:var(--accent)">Primeiro passo:</strong> vá em Configurações e adicione sua Gemini API Key para ativar todas as funcionalidades de IA.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUÇÃO -->
+<div class="page" id="page-producao">
+  <div class="topbar">
+    <div class="topbar-title">Produção de Vídeo</div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" onclick="clearTimeline()">Limpar Timeline</button>
+      <button class="btn btn-accent" onclick="exportarVideo()">⬇ Exportar</button>
+    </div>
+  </div>
+  <div class="content">
+    <div class="grid-2" style="gap:20px;align-items:start">
+
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <!-- UPLOAD -->
+        <div class="panel">
+          <div class="panel-header"><div><div class="panel-title">📁 SEUS VÍDEOS (HD)</div></div></div>
+          <div class="panel-body">
+            <div class="upload-zone" id="uploadZone" onclick="document.getElementById(&#39;fileInput&#39;).click()" ondragover="ev(event)" ondragleave="el(event)" ondrop="ed(event)">
+              <div style="font-size:28px;margin-bottom:8px">📂</div>
+              <div style="font-size:13px;color:var(--text2)">Arraste seus vídeos ou clique para selecionar</div>
+              <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:4px">MP4, MOV, AVI, WebM</div>
+            </div>
+            <input type="file" id="fileInput" accept="video/*" multiple="" style="display:none" onchange="handleFiles(this.files)">
+            <div class="video-grid" id="myVideosGrid"></div>
+          </div>
+        </div>
+        <!-- BUSCAR -->
+        <div class="panel">
+          <div class="panel-header"><div><div class="panel-title">🔍 BUSCAR CLIPES GRATUITOS</div><div class="panel-sub">Pexels &amp; Pixabay — sem custo</div></div></div>
+          <div class="panel-body">
+            <div class="tabs">
+              <div class="tab active" id="tab-pexels" onclick="switchTab(&#39;pexels&#39;)">Pexels</div>
+              <div class="tab" id="tab-pixabay" onclick="switchTab(&#39;pixabay&#39;)">Pixabay</div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <input type="text" id="searchQ" placeholder="cidade, crime, natureza, noite..." onkeydown="if(event.key===&#39;Enter&#39;)searchVids()" style="flex:1">
+              <button class="btn btn-accent" onclick="searchVids()" style="flex-shrink:0">Buscar</button>
+            </div>
+            <div class="video-grid" id="searchGrid"><div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text3);font-size:12px;font-family:var(--mono)">Digite algo para buscar</div></div>
+            <div id="searchSt"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <!-- TIMELINE -->
+        <div class="panel">
+          <div class="panel-header"><div><div class="panel-title">🎞️ TIMELINE</div><div class="panel-sub">Clique em + nos clipes para adicionar</div></div></div>
+          <div class="panel-body">
+            <div class="timeline-wrap" id="tlWrap" ondragover="event.preventDefault()" ondrop="tlDrop(event)">
+              <div class="timeline-empty" id="tlEmpty">Adicione clipes aqui para montar seu vídeo</div>
+              <div class="timeline-clips" id="tlClips"></div>
+            </div>
+            <div style="font-size:10px;font-family:var(--mono);color:var(--text3);margin-top:8px;text-align:right" id="tlCount">0 clipes</div>
+          </div>
+        </div>
+        <!-- NARRAÇÃO -->
+        <div class="panel">
+          <div class="panel-header"><div><div class="panel-title">🎙️ NARRAÇÃO</div><div class="panel-sub">Gemini TTS — Português BR</div></div></div>
+          <div class="panel-body">
+            <div style="margin-bottom:12px">
+              <div class="label">ROTEIRO / TEXTO</div>
+              <textarea id="narText" rows="6" placeholder="Cole aqui o roteiro do vídeo de hoje..."></textarea>
+            </div>
+            <div style="margin-bottom:12px">
+              <div class="label">VOZ</div>
+              <select id="narVoice">
+                <option value="Aoede">Aoede — Feminina, suave e expressiva</option>
+                <option value="Charon">Charon — Masculina, grave e autoritária</option>
+                <option value="Fenrir">Fenrir — Masculina, intensa e dramática</option>
+                <option value="Kore">Kore — Feminina, clara e envolvente</option>
+                <option value="Puck">Puck — Masculina, dinâmica e energética</option>
+              </select>
+            </div>
+            <button class="btn btn-accent" style="width:100%;padding:11px" onclick="gerarNar()" id="btnNar">🎙️ Gerar Narração com Gemini</button>
+            <div id="narSt"></div>
+            <div id="narPlayer" style="display:none;margin-top:12px">
+              <div class="audio-player">
+                <button class="play-btn" onclick="toggleAudio(&#39;nar&#39;)" id="playNar">▶</button>
+                <div class="progress-bar" onclick="seekAud(event,&#39;nar&#39;)"><div class="progress-fill" id="progNar"></div></div>
+                <span class="time-label" id="timeNar">0:00</span>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:8px">
+                <button class="btn btn-ghost" style="flex:1" onclick="dlAudio(&#39;nar&#39;)">⬇ Baixar MP3</button>
+                <button class="btn btn-ghost" style="flex:1" onclick="gerarSRT()">📄 Gerar SRT</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ROTEIRO -->
+<div class="page" id="page-roteiro">
+  <div class="topbar"><div class="topbar-title">Gerador de Roteiro IA</div><div class="topbar-actions"><button class="btn btn-accent" onclick="gerarRoteiro()" id="btnRot">✍️ Gerar Roteiro</button></div></div>
+  <div class="content">
+    <div class="grid-2" style="gap:20px;align-items:start">
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">PARÂMETROS</div></div>
+        <div class="panel-body" style="display:flex;flex-direction:column;gap:14px">
+          <div><div class="label">TEMA DO VÍDEO</div><input type="text" id="rotTema" placeholder="Ex: A história do serial killer mais cruel do Brasil"></div>
+          <div><div class="label">NICHO</div>
+            <select id="rotNicho">
+              <option>Canal Dark — Crimes Reais</option><option>Canal Dark — Mistérios e Conspirações</option>
+              <option>Canal Dark — Histórias de Terror</option><option>Canal Dark — Casos Policiais</option>
+              <option>Canal Dark — Psicologia Sombria</option><option>Canal Dark — Desaparecimentos</option>
+            </select>
+          </div>
+          <div><div class="label">APELO PSICOLÓGICO</div>
+            <select id="rotApelo">
+              <option>Suspense e Tensão Crescente</option><option>Choque e Revelação</option>
+              <option>Medo do Desconhecido</option><option>Empatia e Drama Emocional</option>
+              <option>Curiosidade Mórbida</option><option>Senso de Justiça</option>
+            </select>
+          </div>
+          <div><div class="label">DURAÇÃO</div>
+            <select id="rotDur"><option>3-5 minutos</option><option>5-8 minutos</option><option>8-12 minutos</option><option>12-15 minutos</option></select>
+          </div>
+          <div><div class="label">IDIOMA</div>
+            <select id="rotIdioma"><option value="pt-BR">Português BR</option><option value="es">Espanhol</option><option value="en">Inglês</option><option value="de">Alemão</option></select>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">ROTEIRO GERADO</div><button class="btn btn-ghost" onclick="copiarRot()" style="font-size:11px;padding:5px 10px">Copiar</button></div>
+        <div class="panel-body">
+          <textarea id="rotOut" rows="16" placeholder="O roteiro aparecerá aqui após clicar em Gerar..."></textarea>
+          <div id="rotSt"></div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="btn btn-ghost" style="flex:1" onclick="sendRotToNar()">Usar na Narração →</button>
+            <button class="btn btn-ghost" style="flex:1" onclick="sendRotToYT()">Gerar Títulos →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VOZ -->
+<div class="page" id="page-voz">
+  <div class="topbar"><div class="topbar-title">Narração Neural</div></div>
+  <div class="content">
+    <div class="grid-2" style="gap:20px">
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">VOZES GEMINI TTS</div></div>
+        <div class="panel-body">
+          <div class="voice-card selected"><div class="voice-avatar">👩</div><div><div class="voice-name">Aoede</div><div class="voice-desc">Suave, expressiva — narrativas emocionais</div></div><span class="voice-lang">PT-BR</span></div>
+          <div class="voice-card"><div class="voice-avatar">🧔</div><div><div class="voice-name">Charon</div><div class="voice-desc">Grave, autoritária — crimes e suspense</div></div><span class="voice-lang">PT-BR</span></div>
+          <div class="voice-card"><div class="voice-avatar">😤</div><div><div class="voice-name">Fenrir</div><div class="voice-desc">Intensa, dramática — terror e mistério</div></div><span class="voice-lang">PT-BR</span></div>
+          <div class="voice-card"><div class="voice-avatar">👩‍🎤</div><div><div class="voice-name">Kore</div><div class="voice-desc">Clara, envolvente — histórias emocionais</div></div><span class="voice-lang">PT-BR</span></div>
+          <div class="voice-card"><div class="voice-avatar">🎤</div><div><div class="voice-name">Puck</div><div class="voice-desc">Dinâmica, energética — investigações</div></div><span class="voice-lang">PT-BR</span></div>
+          <div style="margin-top:12px;padding:10px;background:var(--bg3);border-radius:8px;font-size:11px;font-family:var(--mono);color:var(--text3)">💡 ElevenLabs Pro desbloqueará +300 vozes com clonagem vocal</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">GERAR NARRAÇÃO</div></div>
+        <div class="panel-body" style="display:flex;flex-direction:column;gap:14px">
+          <div><div class="label">TEXTO</div><textarea rows="8" id="vozTxt" placeholder="Cole o roteiro aqui..."></textarea></div>
+          <div><div class="label">VOZ</div>
+            <select id="vozSel"><option value="Aoede">Aoede</option><option value="Charon">Charon</option><option value="Fenrir">Fenrir</option><option value="Kore">Kore</option><option value="Puck">Puck</option></select>
+          </div>
+          <button class="btn btn-accent" style="width:100%;padding:11px" onclick="gerarVoz()">🎙️ Gerar Narração</button>
+          <div id="vozSt"></div>
+          <div id="vozPlayer" style="display:none">
+            <div class="audio-player">
+              <button class="play-btn" onclick="toggleAudio(&#39;voz&#39;)" id="playVoz">▶</button>
+              <div class="progress-bar" onclick="seekAud(event,&#39;voz&#39;)"><div class="progress-fill" id="progVoz"></div></div>
+              <span class="time-label" id="timeVoz">0:00</span>
+            </div>
+            <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="dlAudio(&#39;voz&#39;)">⬇ Baixar MP3</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- THUMBNAIL -->
+<div class="page" id="page-thumbnail">
+  <div class="topbar"><div class="topbar-title">Editor de Thumbnail</div><div class="topbar-actions"><button class="btn btn-accent" onclick="dlThumb()">⬇ Baixar PNG</button></div></div>
+  <div class="content">
+    <div class="grid-2" style="gap:20px;align-items:start">
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">CONFIGURAR</div></div>
+        <div class="panel-body" style="display:flex;flex-direction:column;gap:14px">
+          <div><div class="label">TÍTULO PRINCIPAL</div><input type="text" id="thTitulo" placeholder="Título do vídeo" oninput="renderThumb()"></div>
+          <div><div class="label">FRASE DE IMPACTO</div><input type="text" id="thFrase" placeholder="VOCÊ NÃO VAI ACREDITAR" oninput="renderThumb()"></div>
+          <div><div class="label">IMAGEM DE FUNDO</div>
+            <div style="display:flex;gap:8px">
+              <input type="text" id="thImgPath" placeholder="Selecionar imagem..." readonly="" style="flex:1">
+              <button class="btn btn-ghost" onclick="document.getElementById(&#39;thImgFile&#39;).click()">📂</button>
+              <input type="file" id="thImgFile" accept="image/*" style="display:none" onchange="loadThumbImg(this)">
+            </div>
+          </div>
+          <div style="display:flex;gap:12px">
+            <div style="flex:1"><div class="label">COR TEXTO</div><input type="color" id="thCor" value="#FFFFFF" oninput="renderThumb()" style="width:100%;height:38px;padding:2px;cursor:pointer;border-radius:8px"></div>
+            <div style="flex:1"><div class="label">COR DESTAQUE</div><input type="color" id="thCorD" value="#FF0000" oninput="renderThumb()" style="width:100%;height:38px;padding:2px;cursor:pointer;border-radius:8px"></div>
+          </div>
+          <div><div class="label">ESTILO</div>
+            <select id="thEstilo" onchange="renderThumb()">
+              <option value="dark">Dark / Dramático</option>
+              <option value="crime">Crime / Investigação</option>
+              <option value="horror">Terror / Mistério</option>
+              <option value="news">Breaking News</option>
+            </select>
+          </div>
+          <div style="padding:10px;background:var(--bg3);border-radius:8px;font-size:11px;font-family:var(--mono);color:var(--text3)">💡 Geração com Imagen 4 (Gemini) será integrada na próxima versão</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">PREVIEW 1280×720</div></div>
+        <div class="panel-body">
+          <div style="position:relative;width:100%;aspect-ratio:16/9">
+            <canvas id="thumbCanvas" style="width:100%;height:100%;border-radius:8px;display:block" width="1280" height="720"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PUBLICAR -->
+<div class="page" id="page-publicar">
+  <div class="topbar"><div class="topbar-title">Publicar no YouTube</div><div class="topbar-actions"><button class="btn btn-accent" onclick="publicar()">📤 Publicar / Agendar</button></div></div>
+  <div class="content">
+    <div class="grid-2" style="gap:20px;align-items:start">
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">DADOS DO VÍDEO</div><button class="btn btn-ghost" onclick="gerarMetaIA()" style="font-size:11px;padding:5px 10px">✨ Gerar com IA</button></div>
+        <div class="panel-body" style="display:flex;flex-direction:column;gap:14px">
+          <div>
+            <div class="label">ARQUIVO DE VÍDEO</div>
+            <div style="display:flex;gap:8px"><input type="text" id="ytVidPath" placeholder="Selecionar vídeo..." readonly="" style="flex:1"><button class="btn btn-ghost" onclick="document.getElementById(&#39;ytVidFile&#39;).click()">📂</button><input type="file" id="ytVidFile" accept="video/*" style="display:none" onchange="document.getElementById(&#39;ytVidPath&#39;).value=this.files[0]?.name||&#39;&#39;"></div>
+          </div>
+          <div>
+            <div class="label">TÍTULO</div>
+            <input type="text" id="ytTit" placeholder="Título do vídeo..." maxlength="100" oninput="document.getElementById(&#39;ytTitCount&#39;).textContent=this.value.length+&#39;/100&#39;;document.getElementById(&#39;pvTit&#39;).textContent=this.value||&#39;Título do vídeo&#39;">
+            <div style="font-size:10px;font-family:var(--mono);color:var(--text3);margin-top:4px" id="ytTitCount">0/100</div>
+          </div>
+          <div><div class="label">DESCRIÇÃO</div><textarea id="ytDesc" rows="5" placeholder="Descrição com SEO..."></textarea></div>
+          <div><div class="label">TAGS (separadas por vírgula)</div><input type="text" id="ytTags" placeholder="canal dark, crime real, mistério..."></div>
+          <div>
+            <div class="label">THUMBNAIL</div>
+            <div style="display:flex;gap:8px"><input type="text" id="ytThPath" placeholder="Selecionar thumbnail..." readonly="" style="flex:1"><button class="btn btn-ghost" onclick="document.getElementById(&#39;ytThFile&#39;).click()">🖼️</button><input type="file" id="ytThFile" accept="image/*" style="display:none" onchange="loadYTThumb(this)"></div>
+          </div>
+          <div style="display:flex;gap:12px">
+            <div style="flex:1"><div class="label">VISIBILIDADE</div><select id="ytVis"><option value="private">Privado</option><option value="unlisted">Não listado</option><option value="public">Público</option></select></div>
+            <div style="flex:1"><div class="label">AGENDAR</div><input type="datetime-local" id="ytAgen"></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">PREVIEW</div></div>
+        <div class="panel-body">
+          <div style="background:var(--bg3);border-radius:8px;overflow:hidden;border:1px solid var(--border)">
+            <div id="pvThumb" style="width:100%;aspect-ratio:16/9;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:32px">🎬</div>
+            <div style="padding:12px">
+              <div style="font-size:13px;font-weight:700;line-height:1.4" id="pvTit">Título do vídeo</div>
+              <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:4px">Seu Canal • agora mesmo</div>
+            </div>
+          </div>
+          <div id="pubSt"></div>
+          <div style="margin-top:12px;padding:12px;background:var(--bg3);border-radius:8px;font-size:11px;font-family:var(--mono);color:var(--text3)">💡 Adicione a YouTube API Key em Configurações para publicação automática</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CANAL -->
+<div class="page" id="page-canal">
+  <div class="topbar"><div class="topbar-title">Analisar Canal YouTube</div><div class="topbar-actions"><button class="btn btn-accent" onclick="analisarCanal()">🔍 Analisar</button></div></div>
+  <div class="content">
+    <div class="panel" style="margin-bottom:20px">
+      <div class="panel-body" style="display:flex;gap:12px">
+        <input type="text" id="canalUrl" placeholder="@seucanal ou https://youtube.com/@seucanal" style="flex:1">
+        <button class="btn btn-accent" onclick="analisarCanal()">Analisar</button>
+      </div>
+    </div>
+    <div id="canalRes"></div>
+  </div>
+</div>
+
+<!-- PLANNER -->
+<div class="page" id="page-planner">
+  <div class="topbar"><div class="topbar-title">Planner de Produção</div><div class="topbar-actions"><button class="btn btn-accent" onclick="addPlanner()">+ Adicionar</button></div></div>
+  <div class="content">
+    <div class="panel"><div class="panel-body"><div id="plannerList"><div style="text-align:center;padding:32px;color:var(--text3);font-size:13px;font-family:var(--mono)">Nenhum item. Clique em + Adicionar.</div></div></div></div>
+  </div>
+</div>
+
+<!-- CONFIG -->
+<div class="page" id="page-config">
+  <div class="topbar"><div class="topbar-title">Configurações</div><div class="topbar-actions"><button class="btn btn-accent" onclick="saveConfig()">Salvar</button></div></div>
+  <div class="content">
+    <div class="panel">
+      <div class="panel-header"><div class="panel-title">CHAVES DE API</div></div>
+      <div class="panel-body">
+        <div class="setting-row"><div><div class="setting-label">Gemini API Key</div><div class="setting-desc">aistudio.google.com → Get API Key</div></div><input type="password" id="cfGemini" class="setting-input" placeholder="AIza..."></div>
+        <div class="setting-row"><div><div class="setting-label">ElevenLabs API Key</div><div class="setting-desc">elevenlabs.io → My Account → API Keys</div></div><input type="password" id="cfEleven" class="setting-input" placeholder="sk_..."></div>
+        <div class="setting-row"><div><div class="setting-label">Pexels API Key</div><div class="setting-desc">pexels.com/api — gratuito</div></div><input type="password" id="cfPexels" class="setting-input" placeholder="..."></div>
+        <div class="setting-row"><div><div class="setting-label">Pixabay API Key</div><div class="setting-desc">pixabay.com/api/docs — gratuito</div></div><input type="password" id="cfPixabay" class="setting-input" placeholder="..."></div>
+        <div class="setting-row"><div><div class="setting-label">YouTube API Key</div><div class="setting-desc">Google Cloud Console → YouTube Data API v3</div></div><input type="password" id="cfYT" class="setting-input" placeholder="AIza..."></div>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:16px">
+      <div class="panel-header"><div class="panel-title">CANAL</div></div>
+      <div class="panel-body">
+        <div class="setting-row"><div><div class="setting-label">Nome do seu canal</div></div><input type="text" id="cfCanal" class="setting-input" placeholder="@seucanal"></div>
+        <div class="setting-row"><div><div class="setting-label">Nicho principal</div></div>
+          <select id="cfNicho" class="setting-input"><option>Canal Dark — Crimes Reais</option><option>Canal Dark — Mistérios</option><option>Canal Dark — Terror</option><option>Canal Dark — Psicologia</option></select>
+        </div>
+        <div class="setting-row"><div><div class="setting-label">Idioma padrão</div></div>
+          <select id="cfIdioma" class="setting-input"><option value="pt-BR">Português BR</option><option value="es">Espanhol</option><option value="en">Inglês</option><option value="de">Alemão</option></select>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:16px;padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;font-size:12px;font-family:var(--mono);color:var(--text3);line-height:1.7">
+      🔒 Suas chaves são salvas SOMENTE no seu navegador (localStorage). Nunca enviadas para servidores externos.
+    </div>
+  </div>
+</div>
+
+</main>
+<div class="notif" id="notif"></div>
+
+<script>
+// STATE
+let clips=[],audios={nar:null,voz:null},curSrc='pexels',dragClip=null,thumbImg=null;
+let st={vid:0,rot:0,nar:0,pub:0};
+
+// CONFIG
+const LS=(k)=>localStorage.getItem('df_'+k)||'';
+const cfg=()=>({gemini:LS('gemini'),eleven:LS('eleven'),pexels:LS('pexels'),pixabay:LS('pixabay'),yt:LS('yt'),canal:LS('canal'),nicho:LS('nicho'),idioma:LS('idioma')});
+
+function saveConfig(){
+  ['gemini','eleven','pexels','pixabay'].forEach(k=>{const v=document.getElementById('cf'+k.charAt(0).toUpperCase()+k.slice(1));if(v)localStorage.setItem('df_'+k,v.value.trim())});
+  localStorage.setItem('df_yt',document.getElementById('cfYT').value.trim());
+  localStorage.setItem('df_canal',document.getElementById('cfCanal').value.trim());
+  localStorage.setItem('df_nicho',document.getElementById('cfNicho').value);
+  localStorage.setItem('df_idioma',document.getElementById('cfIdioma').value);
+  updateDots(); notify('✅ Configurações salvas!','success');
+}
+
+function loadConfig(){
+  const c=cfg();
+  document.getElementById('cfGemini').value=c.gemini;
+  document.getElementById('cfEleven').value=c.eleven;
+  document.getElementById('cfPexels').value=c.pexels;
+  document.getElementById('cfPixabay').value=c.pixabay;
+  document.getElementById('cfYT').value=c.yt;
+  document.getElementById('cfCanal').value=c.canal;
+  updateDots();
+}
+
+function updateDots(){
+  const c=cfg();
+  document.getElementById('dotGemini').className='api-dot '+(c.gemini?'ok':'off');
+  document.getElementById('dotEleven').className='api-dot '+(c.eleven?'ok':'off');
+}
+
+// NAV
+function nav(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelector(`.nav-item[data-page="${id}"]`)?.classList.add('active');
+}
+document.querySelectorAll('.nav-item').forEach(el=>el.addEventListener('click',()=>nav(el.dataset.page)));
+
+// NOTIFY
+function notify(msg,type='success'){
+  const el=document.getElementById('notif');
+  el.textContent=msg; el.className='notif '+type+' show';
+  setTimeout(()=>el.classList.remove('show'),3500);
+}
+function setSt(id,msg,type){
+  const el=document.getElementById(id); if(!el)return;
+  if(!msg){el.innerHTML='';return;}
+  const ic={loading:'<div class="spinner"></div>',success:'✅ ',error:'❌ ',info:'ℹ️ '};
+  el.innerHTML=`<div class="status-bar ${type}">${ic[type]||''}${msg}</div>`;
+}
+
+// UPLOAD
+function ev(e){e.preventDefault();document.getElementById('uploadZone').classList.add('dragover')}
+function el(e){document.getElementById('uploadZone').classList.remove('dragover')}
+function ed(e){e.preventDefault();document.getElementById('uploadZone').classList.remove('dragover');handleFiles(e.dataTransfer.files)}
+function handleFiles(files){
+  const grid=document.getElementById('myVideosGrid');
+  Array.from(files).forEach(f=>{
+    if(!f.type.startsWith('video/'))return;
+    const url=URL.createObjectURL(f);
+    const d=document.createElement('div');
+    d.className='video-thumb'; d.draggable=true;
+    d.innerHTML=`<video src="${url}" muted></video><span class="src-badge">LOCAL</span><div class="add-btn" onclick="addClip('${url}','${f.name}','local','')">➕</div>`;
+    d.addEventListener('dragstart',()=>{dragClip={url,name:f.name,type:'local',thumb:''};});
+    grid.appendChild(d);
+  });
+  notify(`${files.length} vídeo(s) carregado(s)!`,'success');
+}
+
+// SEARCH
+function switchTab(src){
+  curSrc=src;
+  document.getElementById('tab-pexels').classList.toggle('active',src==='pexels');
+  document.getElementById('tab-pixabay').classList.toggle('active',src==='pixabay');
+}
+async function searchVids(){
+  const q=document.getElementById('searchQ').value.trim();
+  if(!q){notify('Digite algo para buscar','error');return;}
+  const c=cfg(); const grid=document.getElementById('searchGrid');
+  grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text3);font-size:12px;font-family:var(--mono)">Buscando...</div>';
+  setSt('searchSt','','');
+  if(curSrc==='pexels'){
+    if(!c.pexels){grid.innerHTML='';setSt('searchSt','Adicione a chave do Pexels em Configurações (grátis em pexels.com/api)','error');return;}
+    try{
+      const r=await fetch(`https://api.pexels.com/videos/search?query=${encodeURIComponent(q)}&per_page=9&orientation=landscape`,{headers:{Authorization:c.pexels}});
+      const d=await r.json(); grid.innerHTML='';
+      if(!d.videos?.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:16px;color:var(--text3);font-size:12px;font-family:var(--mono)">Nenhum resultado</div>';return;}
+      d.videos.forEach(v=>{
+        const file=v.video_files.find(f=>f.quality==='hd')||v.video_files[0];
+        const div=document.createElement('div'); div.className='video-thumb'; div.draggable=true;
+        div.innerHTML=`<img src="${v.image}" alt=""><span class="src-badge">PEXELS</span><div class="add-btn" onclick="addClip('${file.link}','pexels-${v.id}','pexels','${v.image}')">➕</div>`;
+        div.addEventListener('dragstart',()=>{dragClip={url:file.link,name:'pexels-'+v.id,type:'pexels',thumb:v.image};});
+        grid.appendChild(div);
+      });
+    }catch(e){grid.innerHTML='';setSt('searchSt','Erro: '+e.message,'error');}
+  } else {
+    if(!c.pixabay){grid.innerHTML='';setSt('searchSt','Adicione a chave do Pixabay em Configurações (grátis)','error');return;}
+    try{
+      const r=await fetch(`https://pixabay.com/api/videos/?key=${c.pixabay}&q=${encodeURIComponent(q)}&per_page=9&video_type=film`);
+      const d=await r.json(); grid.innerHTML='';
+      if(!d.hits?.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:16px;color:var(--text3);font-size:12px;font-family:var(--mono)">Nenhum resultado</div>';return;}
+      d.hits.forEach(v=>{
+        const file=v.videos.large?.url||v.videos.medium?.url;
+        const thumb=v.videos.tiny?.thumbnail||v.userImageURL;
+        const div=document.createElement('div'); div.className='video-thumb'; div.draggable=true;
+        div.innerHTML=`<img src="${thumb}" alt=""><span class="src-badge">PIXABAY</span><div class="add-btn" onclick="addClip('${file}','pixabay-${v.id}','pixabay','${thumb}')">➕</div>`;
+        div.addEventListener('dragstart',()=>{dragClip={url:file,name:'pixabay-'+v.id,type:'pixabay',thumb};});
+        grid.appendChild(div);
+      });
+    }catch(e){grid.innerHTML='';setSt('searchSt','Erro: '+e.message,'error');}
+  }
+}
+
+// TIMELINE
+function addClip(url,name,type,thumb){
+  clips.push({url,name,type,thumb}); renderTL();
+  st.vid++; document.getElementById('ds-vid').textContent=st.vid;
+  notify('Clipe adicionado!','success');
+}
+function tlDrop(e){e.preventDefault();if(dragClip){addClip(dragClip.url,dragClip.name,dragClip.type,dragClip.thumb);dragClip=null;}}
+function removeClip(i){clips.splice(i,1);renderTL();}
+function clearTimeline(){clips=[];renderTL();notify('Timeline limpa','success');}
+function renderTL(){
+  const cont=document.getElementById('tlClips'),empty=document.getElementById('tlEmpty');
+  cont.innerHTML='';
+  if(!clips.length){empty.style.display='flex';document.getElementById('tlCount').textContent='0 clipes';return;}
+  empty.style.display='none';
+  clips.forEach((c,i)=>{
+    const d=document.createElement('div'); d.className='timeline-clip';
+    if(c.thumb) d.innerHTML=`<img src="${c.thumb}" alt=""><div class="clip-del" onclick="removeClip(${i})">✕</div>`;
+    else if(c.type==='local') d.innerHTML=`<video src="${c.url}" muted></video><div class="clip-del" onclick="removeClip(${i})">✕</div>`;
+    else d.innerHTML=`<div style="width:96px;height:64px;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:10px;font-family:var(--mono);color:var(--text3)">clipe ${i+1}</div><div class="clip-del" onclick="removeClip(${i})">✕</div>`;
+    cont.appendChild(d);
+  });
+  document.getElementById('tlCount').textContent=clips.length+' clipe(s)';
+}
+
+// GEMINI TTS
+async function callTTS(text,voice){
+  const c=cfg();
+  if(!c.gemini)throw new Error('Adicione a Gemini API Key em Configurações');
+  const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${c.gemini}`,{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({contents:[{parts:[{text}]}],generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:voice}}}}})
+  });
+  const d=await r.json();
+  if(d.error)throw new Error(d.error.message);
+  const audio=d.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+  if(!audio)throw new Error('Nenhum áudio retornado pela API');
+  const bytes=atob(audio),arr=new Uint8Array(bytes.length);
+  for(let i=0;i<bytes.length;i++)arr[i]=bytes.charCodeAt(i);
+  return new Blob([arr],{type:'audio/wav'});
+}
+
+async function gerarNar(){
+  const text=document.getElementById('narText').value.trim();
+  const voice=document.getElementById('narVoice').value;
+  if(!text){setSt('narSt','Digite o roteiro para narrar','error');return;}
+  const btn=document.getElementById('btnNar'); btn.disabled=true; btn.textContent='⏳ Gerando...';
+  setSt('narSt','Gerando narração com Gemini TTS...','loading');
+  document.getElementById('narPlayer').style.display='none';
+  try{
+    const blob=await callTTS(text,voice);
+    const url=URL.createObjectURL(blob);
+    if(audios.nar)audios.nar.pause();
+    audios.nar=new Audio(url); audios.nar._blob=blob;
+    audios.nar.ontimeupdate=()=>updateProg('nar');
+    audios.nar.onended=()=>{document.getElementById('playNar').textContent='▶';};
+    document.getElementById('narPlayer').style.display='block';
+    setSt('narSt','Narração gerada com sucesso!','success');
+    st.nar++; document.getElementById('ds-nar').textContent=st.nar;
+  }catch(e){setSt('narSt','Erro: '+e.message,'error');}
+  finally{btn.disabled=false; btn.textContent='🎙️ Gerar Narração com Gemini';}
+}
+
+async function gerarVoz(){
+  const text=document.getElementById('vozTxt').value.trim();
+  const voice=document.getElementById('vozSel').value;
+  if(!text){setSt('vozSt','Digite o texto','error');return;}
+  setSt('vozSt','Gerando narração...','loading');
+  document.getElementById('vozPlayer').style.display='none';
+  try{
+    const blob=await callTTS(text,voice);
+    const url=URL.createObjectURL(blob);
+    if(audios.voz)audios.voz.pause();
+    audios.voz=new Audio(url); audios.voz._blob=blob;
+    audios.voz.ontimeupdate=()=>updateProg('voz');
+    audios.voz.onended=()=>{document.getElementById('playVoz').textContent='▶';};
+    document.getElementById('vozPlayer').style.display='block';
+    setSt('vozSt','Narração gerada!','success');
+    st.nar++; document.getElementById('ds-nar').textContent=st.nar;
+  }catch(e){setSt('vozSt','Erro: '+e.message,'error');}
+}
+
+function toggleAudio(k){
+  const a=audios[k]; if(!a)return;
+  const btn=document.getElementById(k==='nar'?'playNar':'playVoz');
+  if(a.paused){a.play();btn.textContent='⏸';}else{a.pause();btn.textContent='▶';}
+}
+function updateProg(k){
+  const a=audios[k]; if(!a)return;
+  const pct=(a.currentTime/a.duration)*100||0;
+  document.getElementById('prog'+k.charAt(0).toUpperCase()+k.slice(1)).style.width=pct+'%';
+  document.getElementById('time'+k.charAt(0).toUpperCase()+k.slice(1)).textContent=fmtTime(a.currentTime);
+}
+function seekAud(e,k){
+  const a=audios[k]; if(!a)return;
+  const rect=e.currentTarget.getBoundingClientRect();
+  a.currentTime=((e.clientX-rect.left)/rect.width)*a.duration;
+}
+function dlAudio(k){
+  const a=audios[k]; if(!a||!a._blob)return;
+  const el=document.createElement('a'); el.href=URL.createObjectURL(a._blob); el.download='narracao_darkflow.wav'; el.click();
+  notify('Download iniciado!','success');
+}
+function fmtTime(s){return `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`||'0:00';}
+
+function gerarSRT(){
+  const text=document.getElementById('narText').value.trim();
+  if(!text){notify('Nenhum texto para gerar SRT','error');return;}
+  const sents=text.match(/[^.!?]+[.!?]+/g)||[text];
+  let srt='',t=0;
+  sents.forEach((s,i)=>{
+    const dur=Math.max(2,s.trim().split(' ').length*0.4);
+    const st2=fmtSRT(t); t+=dur; const en=fmtSRT(t);
+    srt+=`${i+1}\n${st2} --> ${en}\n${s.trim()}\n\n`;
+  });
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([srt],{type:'text/plain'}));
+  a.download='legendas_darkflow.srt'; a.click();
+  notify('SRT gerado!','success');
+}
+function fmtSRT(s){
+  const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=Math.floor(s%60),ms=Math.floor((s%1)*1000);
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')},${String(ms).padStart(3,'0')}`;
+}
+
+// ROTEIRO
+async function gerarRoteiro(){
+  const tema=document.getElementById('rotTema').value.trim();
+  if(!tema){setSt('rotSt','Digite o tema','error');return;}
+  const c=cfg();
+  if(!c.gemini){setSt('rotSt','Adicione a Gemini API Key em Configurações','error');return;}
+  const btn=document.getElementById('btnRot'); btn.disabled=true; btn.textContent='⏳ Gerando...';
+  setSt('rotSt','Gerando roteiro com IA...','loading');
+  document.getElementById('rotOut').value='';
+  const prompt=`Você é um roteirista especialista em canais dark do YouTube. Crie um roteiro completo e envolvente.
+
+TEMA: ${tema}
+NICHO: ${document.getElementById('rotNicho').value}
+APELO PSICOLÓGICO: ${document.getElementById('rotApelo').value}
+DURAÇÃO: ${document.getElementById('rotDur').value}
+IDIOMA: ${document.getElementById('rotIdioma').value}
+
+Regras:
+- Gancho poderoso nos primeiros 15 segundos
+- Use o apelo psicológico de forma consistente
+- Estilo investigativo e envolvente
+- Pausas dramáticas e variações de ritmo
+- Conclusão impactante
+- Escreva APENAS a narração, sem indicações técnicas
+
+Escreva o roteiro:`;
+  try{
+    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${c.gemini}`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})
+    });
+    const d=await r.json();
+    if(d.error)throw new Error(d.error.message);
+    const text=d.candidates?.[0]?.content?.parts?.[0]?.text;
+    if(!text)throw new Error('Nenhum texto retornado');
+    document.getElementById('rotOut').value=text;
+    document.getElementById('rotOut').readOnly=false;
+    setSt('rotSt','Roteiro gerado! Você pode editar antes de usar.','success');
+    st.rot++; document.getElementById('ds-rot').textContent=st.rot;
+  }catch(e){setSt('rotSt','Erro: '+e.message,'error');}
+  finally{btn.disabled=false; btn.textContent='✍️ Gerar Roteiro';}
+}
+function copiarRot(){navigator.clipboard.writeText(document.getElementById('rotOut').value);notify('Copiado!','success');}
+function sendRotToNar(){const t=document.getElementById('rotOut').value;if(!t){notify('Gere um roteiro primeiro','error');return;}document.getElementById('narText').value=t;nav('producao');notify('Roteiro enviado para narração!','success');}
+function sendRotToYT(){const t=document.getElementById('rotOut').value;if(!t){notify('Gere um roteiro primeiro','error');return;}gerarMetaComRot(t);nav('publicar');}
+
+// THUMBNAIL
+function loadThumbImg(input){
+  if(!input.files[0])return;
+  document.getElementById('thImgPath').value=input.files[0].name;
+  const reader=new FileReader();
+  reader.onload=e=>{thumbImg=new Image();thumbImg.onload=renderThumb;thumbImg.src=e.target.result;};
+  reader.readAsDataURL(input.files[0]);
+}
+function renderThumb(){
+  const canvas=document.getElementById('thumbCanvas');
+  canvas.width=1280; canvas.height=720;
+  const ctx=canvas.getContext('2d');
+  const titulo=document.getElementById('thTitulo').value||'TÍTULO DO VÍDEO';
+  const frase=document.getElementById('thFrase').value||'';
+  const cor=document.getElementById('thCor').value;
+  const corD=document.getElementById('thCorD').value;
+  const estilo=document.getElementById('thEstilo').value;
+  // background
+  if(thumbImg){ctx.drawImage(thumbImg,0,0,1280,720);}
+  else{
+    const grad=ctx.createLinearGradient(0,0,1280,720);
+    if(estilo==='dark'){grad.addColorStop(0,'#0a0a0b');grad.addColorStop(1,'#1a0a0a');}
+    else if(estilo==='crime'){grad.addColorStop(0,'#0a0a1a');grad.addColorStop(1,'#0a1a0a');}
+    else if(estilo==='horror'){grad.addColorStop(0,'#1a0a0a');grad.addColorStop(1,'#0a0a0a');}
+    else{grad.addColorStop(0,'#0a0a1a');grad.addColorStop(1,'#1a1a0a');}
+    ctx.fillStyle=grad; ctx.fillRect(0,0,1280,720);
+  }
+  // overlay
+  ctx.fillStyle='rgba(0,0,0,0.5)'; ctx.fillRect(0,0,1280,720);
+  // frase destaque
+  if(frase){
+    ctx.fillStyle=corD; ctx.fillRect(80,200,1120,90);
+    ctx.fillStyle='#fff'; ctx.font='bold 52px Syne,sans-serif';
+    ctx.textAlign='center'; ctx.fillText(frase,640,260);
+  }
+  // título
+  ctx.fillStyle=cor; ctx.font='bold 72px Syne,sans-serif';
+  ctx.textAlign='center';
+  const words=titulo.split(' '); let line='',y=frase?400:360,lines=[];
+  words.forEach(w=>{const test=line+w+' ';if(ctx.measureText(test).width>1100&&line){lines.push(line.trim());line=w+' ';}else line=test;});
+  lines.push(line.trim());
+  lines.forEach((l,i)=>ctx.fillText(l,640,y+i*80));
+}
+function dlThumb(){
+  const canvas=document.getElementById('thumbCanvas');
+  if(canvas.width===0){notify('Configure a thumbnail primeiro','error');return;}
+  const a=document.createElement('a'); a.download='thumbnail_darkflow.png';
+  a.href=canvas.toDataURL('image/png'); a.click();
+  notify('Thumbnail baixada!','success');
+}
+
+// PUBLICAR
+function loadYTThumb(input){
+  if(!input.files[0])return;
+  document.getElementById('ytThPath').value=input.files[0].name;
+  const url=URL.createObjectURL(input.files[0]);
+  document.getElementById('pvThumb').innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover">`;
+}
+async function gerarMetaIA(){
+  const c=cfg();
+  if(!c.gemini){notify('Adicione a Gemini API Key em Configurações','error');return;}
+  const tema=document.getElementById('ytTit').value||'canal dark';
+  setSt('pubSt','Gerando com IA...','loading');
+  const prompt=`Crie metadados SEO para YouTube para canal dark com tema: "${tema}". Retorne JSON com "titulo"(máx 80 chars), "descricao"(3 parágrafos + hashtags), "tags"(15 tags separadas por vírgula). SOMENTE JSON.`;
+  try{
+    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${c.gemini}`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})
+    });
+    const d=await r.json();
+    if(d.error)throw new Error(d.error.message);
+    let text=d.candidates?.[0]?.content?.parts?.[0]?.text||'';
+    text=text.replace(/```json|```/g,'').trim();
+    const p=JSON.parse(text);
+    document.getElementById('ytTit').value=p.titulo||'';
+    document.getElementById('ytDesc').value=p.descricao||'';
+    document.getElementById('ytTags').value=p.tags||'';
+    document.getElementById('pvTit').textContent=p.titulo||'';
+    document.getElementById('ytTitCount').textContent=(p.titulo||'').length+'/100';
+    setSt('pubSt','Metadados gerados!','success');
+  }catch(e){setSt('pubSt','Erro: '+e.message,'error');}
+}
+async function gerarMetaComRot(rot){
+  const c=cfg(); if(!c.gemini)return;
+  const prompt=`Baseado neste roteiro de canal dark, crie metadados YouTube. JSON com "titulo", "descricao", "tags". Roteiro: ${rot.substring(0,500)}... SOMENTE JSON.`;
+  try{
+    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${c.gemini}`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})
+    });
+    const d=await r.json();
+    let text=d.candidates?.[0]?.content?.parts?.[0]?.text||'';
+    text=text.replace(/```json|```/g,'').trim();
+    const p=JSON.parse(text);
+    document.getElementById('ytTit').value=p.titulo||'';
+    document.getElementById('ytDesc').value=p.descricao||'';
+    document.getElementById('ytTags').value=p.tags||'';
+    document.getElementById('pvTit').textContent=p.titulo||'';
+  }catch(e){}
+}
+function publicar(){
+  const c=cfg();
+  if(!document.getElementById('ytTit').value){notify('Preencha o título','error');return;}
+  if(!c.yt){setSt('pubSt','Para publicação automática, adicione a YouTube API Key em Configurações. Por enquanto baixe o vídeo e publique manualmente no YouTube.','info');return;}
+  setSt('pubSt','Publicação automática via YouTube API em breve!','info');
+}
+
+// CANAL
+async function analisarCanal(){
+  const url=document.getElementById('canalUrl').value.trim();
+  if(!url){notify('Digite a URL do canal','error');return;}
+  const c=cfg();
+  if(!c.gemini){notify('Adicione a Gemini API Key em Configurações','error');return;}
+  document.getElementById('canalRes').innerHTML='<div class="status-bar loading"><div class="spinner"></div>Analisando canal com IA...</div>';
+  const prompt=`Analise o canal do YouTube: ${url}. Retorne JSON com: "nome", "nicho", "pontosFortes"(array), "sugestoes"(array), "temasSugeridos"(array de 5 temas para novos vídeos). SOMENTE JSON.`;
+  try{
+    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${c.gemini}`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})
+    });
+    const d=await r.json();
+    if(d.error)throw new Error(d.error.message);
+    let text=d.candidates?.[0]?.content?.parts?.[0]?.text||'';
+    text=text.replace(/```json|```/g,'').trim();
+    const p=JSON.parse(text);
+    document.getElementById('canalRes').innerHTML=`
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">📊 ${p.nome||url}</div></div>
+        <div class="panel-body">
+          <div class="grid-2" style="gap:16px">
+            <div>
+              <div class="label">NICHO</div>
+              <div style="background:var(--bg3);padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:12px">${p.nicho||'-'}</div>
+              <div class="label">PONTOS FORTES</div>
+              ${(p.pontosFortes||[]).map(x=>`<div style="padding:6px 0;font-size:13px;border-bottom:1px solid var(--border);color:var(--green)">✓ ${x}</div>`).join('')}
+              <div class="label" style="margin-top:12px">SUGESTÕES</div>
+              ${(p.sugestoes||[]).map(x=>`<div style="padding:6px 0;font-size:13px;border-bottom:1px solid var(--border)">💡 ${x}</div>`).join('')}
+            </div>
+            <div>
+              <div class="label">TEMAS SUGERIDOS (clique para usar)</div>
+              ${(p.temasSugeridos||[]).map(x=>`<div class="voice-card" style="margin-bottom:6px" onclick="document.getElementById('rotTema').value='${x.replace(/'/g,"\\'")}';nav('roteiro')">📌 ${x}</div>`).join('')}
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }catch(e){document.getElementById('canalRes').innerHTML=`<div class="status-bar error">❌ Erro: ${e.message}</div>`;}
+}
+
+function exportarVideo(){
+  if(!clips.length){notify('Adicione clipes na timeline primeiro','error');return;}
+  notify('⬇ Para exportar com FFmpeg, hospede a plataforma no Railway. Por enquanto baixe o áudio separado.','info');
+}
+
+// PLANNER
+let plannerItems=JSON.parse(localStorage.getItem('df_planner')||'[]');
+function savePlanner(){localStorage.setItem('df_planner',JSON.stringify(plannerItems));}
+function renderPlanner(){
+  const el=document.getElementById('plannerList');
+  if(!plannerItems.length){el.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3);font-size:13px;font-family:var(--mono)">Nenhum item. Clique em + Adicionar.</div>';return;}
+  el.innerHTML=plannerItems.map((it,i)=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)">
+      <input type="checkbox" ${it.done?'checked':''} onchange="plannerItems[${i}].done=this.checked;savePlanner()" style="width:16px;height:16px;cursor:pointer">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600;${it.done?'text-decoration:line-through;color:var(--text3)':''}">${it.titulo}</div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">${it.canal} • ${it.data||'sem data'}</div>
+      </div>
+      <button class="btn btn-ghost" style="font-size:11px;padding:4px 10px" onclick="plannerItems.splice(${i},1);savePlanner();renderPlanner()">Remover</button>
+    </div>`).join('');
+}
+function addPlanner(){
+  const titulo=prompt('Título do vídeo:'); if(!titulo)return;
+  const canal=prompt('Canal:','@seucanal')||'';
+  const data=prompt('Data (DD/MM/YYYY):','')||'';
+  plannerItems.push({titulo,canal,data,done:false});
+  savePlanner(); renderPlanner(); notify('Item adicionado!','success');
+}
+
+// INIT
+window.addEventListener('DOMContentLoaded',()=>{
+  loadConfig(); renderPlanner(); renderThumb();
+  document.getElementById('page-planner').addEventListener('click',()=>{});
+});
+</script>
+
+
+</body></html>
