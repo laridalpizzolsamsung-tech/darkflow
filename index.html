@@ -876,7 +876,7 @@ function dlSRTWhisper(){
   notify('SRT baixado!','success');
 }
 
-
+function gerarSRT(){
   const text=document.getElementById('narText').value.trim();
   if(!text){notify('Nenhum texto para gerar SRT','error');return;}
   const sents=text.match(/[^.!?]+[.!?]+/g)||[text];
