@@ -374,14 +374,16 @@ select option{background:var(--bg3)}
   <div class="content">
     <div class="grid-2" style="gap:20px">
       <div class="panel">
-        <div class="panel-header"><div class="panel-title">VOZES GEMINI TTS</div></div>
+        <div class="panel-header"><div class="panel-title">VOZES ELEVENLABS</div></div>
         <div class="panel-body">
-          <div class="voice-card selected"><div class="voice-avatar">👩</div><div><div class="voice-name">Aoede</div><div class="voice-desc">Suave, expressiva — narrativas emocionais</div></div><span class="voice-lang">PT-BR</span></div>
-          <div class="voice-card"><div class="voice-avatar">🧔</div><div><div class="voice-name">Charon</div><div class="voice-desc">Grave, autoritária — crimes e suspense</div></div><span class="voice-lang">PT-BR</span></div>
-          <div class="voice-card"><div class="voice-avatar">😤</div><div><div class="voice-name">Fenrir</div><div class="voice-desc">Intensa, dramática — terror e mistério</div></div><span class="voice-lang">PT-BR</span></div>
-          <div class="voice-card"><div class="voice-avatar">👩‍🎤</div><div><div class="voice-name">Kore</div><div class="voice-desc">Clara, envolvente — histórias emocionais</div></div><span class="voice-lang">PT-BR</span></div>
-          <div class="voice-card"><div class="voice-avatar">🎤</div><div><div class="voice-name">Puck</div><div class="voice-desc">Dinâmica, energética — investigações</div></div><span class="voice-lang">PT-BR</span></div>
-          <div style="margin-top:12px;padding:10px;background:var(--bg3);border-radius:8px;font-size:11px;font-family:var(--mono);color:var(--text3)">💡 ElevenLabs Pro desbloqueará +300 vozes com clonagem vocal</div>
+          <div class="voice-card selected"><div class="voice-avatar">👩</div><div><div class="voice-name">Rachel</div><div class="voice-desc">Feminina, suave e expressiva — espiritualidade</div></div><span class="voice-lang">PT/EN</span></div>
+          <div class="voice-card"><div class="voice-avatar">👩</div><div><div class="voice-name">Bella</div><div class="voice-desc">Feminina, acolhedora e calorosa — emoção</div></div><span class="voice-lang">PT/EN</span></div>
+          <div class="voice-card"><div class="voice-avatar">👩</div><div><div class="voice-name">Domi</div><div class="voice-desc">Feminina, forte e confiante — transformação</div></div><span class="voice-lang">PT/EN</span></div>
+          <div class="voice-card"><div class="voice-avatar">🧔</div><div><div class="voice-name">Antoni</div><div class="voice-desc">Masculina, suave e narrativa — reflexão</div></div><span class="voice-lang">PT/EN</span></div>
+          <div class="voice-card"><div class="voice-avatar">🧔</div><div><div class="voice-name">Arnold</div><div class="voice-desc">Masculina, profunda e autoritária — impacto</div></div><span class="voice-lang">PT/EN</span></div>
+          <div class="voice-card"><div class="voice-avatar">🧔</div><div><div class="voice-name">Adam</div><div class="voice-desc">Masculina, grave e envolvente — drama</div></div><span class="voice-lang">PT/EN</span></div>
+          <div class="voice-card"><div class="voice-avatar">🎤</div><div><div class="voice-name">Sam</div><div class="voice-desc">Masculina, dinâmica e energética — urgência</div></div><span class="voice-lang">PT/EN</span></div>
+          <div style="margin-top:12px;padding:10px;background:var(--bg3);border-radius:8px;font-size:11px;font-family:var(--mono);color:var(--text3)">💡 No Creator você pode adicionar vozes personalizadas no ElevenLabs</div>
         </div>
       </div>
       <div class="panel">
@@ -389,9 +391,17 @@ select option{background:var(--bg3)}
         <div class="panel-body" style="display:flex;flex-direction:column;gap:14px">
           <div><div class="label">TEXTO</div><textarea rows="8" id="vozTxt" placeholder="Cole o roteiro aqui..."></textarea></div>
           <div><div class="label">VOZ</div>
-            <select id="vozSel"><option value="Aoede">Aoede</option><option value="Charon">Charon</option><option value="Fenrir">Fenrir</option><option value="Kore">Kore</option><option value="Puck">Puck</option></select>
+            <select id="vozSel">
+              <option value="21m00Tcm4TlvDq8ikWAM">Rachel — Feminina, suave e expressiva</option>
+              <option value="EXAVITQu4vr4xnSDxMaL">Bella — Feminina, acolhedora</option>
+              <option value="AZnzlk1XvdvUeBnXmlld">Domi — Feminina, forte e confiante</option>
+              <option value="ErXwobaYiN019PkySvjV">Antoni — Masculina, suave e narrativa</option>
+              <option value="VR6AewLTigWG4xSOukaG">Arnold — Masculina, profunda</option>
+              <option value="pNInz6obpgDQGcFmaJgB">Adam — Masculina, grave e envolvente</option>
+              <option value="yoZ06aMxZJJ28mfd3POQ">Sam — Masculina, dinâmica</option>
+            </select>
           </div>
-          <button class="btn btn-accent" style="width:100%;padding:11px" onclick="gerarVoz()">🎙️ Gerar Narração</button>
+          <button class="btn btn-accent" style="width:100%;padding:11px" onclick="gerarVoz()">🎙️ Gerar Narração com ElevenLabs</button>
           <div id="vozSt"></div>
           <div id="vozPlayer" style="display:none">
             <div class="audio-player">
