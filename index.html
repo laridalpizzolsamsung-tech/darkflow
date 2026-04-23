@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/esyah/Downloads/darkflow.html -->
-<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DarkFlow — Plataforma de Produção</title>
-<link href="./darkflow_files/css2" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0a0a0b;--bg2:#111113;--bg3:#1a1a1e;--bg4:#222228;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--text:#f0f0f0;--text2:#888;--text3:#555;--accent:#e8ff47;--accent2:#c8e000;--red:#ff4d4d;--green:#4dff91;--blue:#4d9fff;--font:'Syne',sans-serif;--mono:'DM Mono',monospace}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -141,7 +141,7 @@ select option{background:var(--bg3)}
 
 <!-- DASHBOARD -->
 <div class="page active" id="page-dashboard">
-  <div class="topbar"><div class="topbar-title">Dashboard</div><div class="topbar-actions"><button class="btn btn-accent" onclick="nav(&#39;producao&#39;)">+ Novo Vídeo</button></div></div>
+  <div class="topbar"><div class="topbar-title">Dashboard</div><div class="topbar-actions"><button class="btn btn-accent" onclick="nav('producao')">+ Novo Vídeo</button></div></div>
   <div class="content">
     <div class="stat-cards">
       <div class="stat-card"><div class="stat-val" id="ds-vid">0</div><div class="stat-lbl">clipes na timeline</div></div>
@@ -153,9 +153,9 @@ select option{background:var(--bg3)}
       <div class="panel-header"><div><div class="panel-title">INÍCIO RÁPIDO</div><div class="panel-sub">O que você quer fazer agora?</div></div></div>
       <div class="panel-body">
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
-          <div class="voice-card" onclick="nav(&#39;producao&#39;)" style="flex-direction:column;align-items:flex-start;gap:8px"><div style="font-size:24px">🎬</div><div class="voice-name">Montar Vídeo</div><div class="voice-desc">Upload + busca + timeline + narração</div></div>
-          <div class="voice-card" onclick="nav(&#39;roteiro&#39;)" style="flex-direction:column;align-items:flex-start;gap:8px"><div style="font-size:24px">✍️</div><div class="voice-name">Criar Roteiro</div><div class="voice-desc">Gerar roteiro com IA para canal dark</div></div>
-          <div class="voice-card" onclick="nav(&#39;publicar&#39;)" style="flex-direction:column;align-items:flex-start;gap:8px"><div style="font-size:24px">📤</div><div class="voice-name">Publicar no YouTube</div><div class="voice-desc">Título, descrição, tags e agendamento</div></div>
+          <div class="voice-card" onclick="nav('producao')" style="flex-direction:column;align-items:flex-start;gap:8px"><div style="font-size:24px">🎬</div><div class="voice-name">Montar Vídeo</div><div class="voice-desc">Upload + busca + timeline + narração</div></div>
+          <div class="voice-card" onclick="nav('roteiro')" style="flex-direction:column;align-items:flex-start;gap:8px"><div style="font-size:24px">✍️</div><div class="voice-name">Criar Roteiro</div><div class="voice-desc">Gerar roteiro com IA para canal dark</div></div>
+          <div class="voice-card" onclick="nav('publicar')" style="flex-direction:column;align-items:flex-start;gap:8px"><div style="font-size:24px">📤</div><div class="voice-name">Publicar no YouTube</div><div class="voice-desc">Título, descrição, tags e agendamento</div></div>
         </div>
         <div style="margin-top:16px;padding:14px;background:var(--bg3);border-radius:8px;font-size:12px;font-family:var(--mono);color:var(--text3);line-height:1.8">
           🔑 <strong style="color:var(--accent)">Primeiro passo:</strong> vá em Configurações e adicione sua Gemini API Key para ativar todas as funcionalidades de IA.
@@ -182,25 +182,25 @@ select option{background:var(--bg3)}
         <div class="panel">
           <div class="panel-header"><div><div class="panel-title">📁 SEUS VÍDEOS (HD)</div></div></div>
           <div class="panel-body">
-            <div class="upload-zone" id="uploadZone" onclick="document.getElementById(&#39;fileInput&#39;).click()" ondragover="ev(event)" ondragleave="el(event)" ondrop="ed(event)">
+            <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()" ondragover="ev(event)" ondragleave="el(event)" ondrop="ed(event)">
               <div style="font-size:28px;margin-bottom:8px">📂</div>
               <div style="font-size:13px;color:var(--text2)">Arraste seus vídeos ou clique para selecionar</div>
               <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:4px">MP4, MOV, AVI, WebM</div>
             </div>
-            <input type="file" id="fileInput" accept="video/*" multiple="" style="display:none" onchange="handleFiles(this.files)">
+            <input type="file" id="fileInput" accept="video/*" multiple style="display:none" onchange="handleFiles(this.files)">
             <div class="video-grid" id="myVideosGrid"></div>
           </div>
         </div>
         <!-- BUSCAR -->
         <div class="panel">
-          <div class="panel-header"><div><div class="panel-title">🔍 BUSCAR CLIPES GRATUITOS</div><div class="panel-sub">Pexels &amp; Pixabay — sem custo</div></div></div>
+          <div class="panel-header"><div><div class="panel-title">🔍 BUSCAR CLIPES GRATUITOS</div><div class="panel-sub">Pexels & Pixabay — sem custo</div></div></div>
           <div class="panel-body">
             <div class="tabs">
-              <div class="tab active" id="tab-pexels" onclick="switchTab(&#39;pexels&#39;)">Pexels</div>
-              <div class="tab" id="tab-pixabay" onclick="switchTab(&#39;pixabay&#39;)">Pixabay</div>
+              <div class="tab active" id="tab-pexels" onclick="switchTab('pexels')">Pexels</div>
+              <div class="tab" id="tab-pixabay" onclick="switchTab('pixabay')">Pixabay</div>
             </div>
             <div style="display:flex;gap:8px">
-              <input type="text" id="searchQ" placeholder="cidade, crime, natureza, noite..." onkeydown="if(event.key===&#39;Enter&#39;)searchVids()" style="flex:1">
+              <input type="text" id="searchQ" placeholder="cidade, crime, natureza, noite..." onkeydown="if(event.key==='Enter')searchVids()" style="flex:1">
               <button class="btn btn-accent" onclick="searchVids()" style="flex-shrink:0">Buscar</button>
             </div>
             <div class="video-grid" id="searchGrid"><div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text3);font-size:12px;font-family:var(--mono)">Digite algo para buscar</div></div>
@@ -243,12 +243,12 @@ select option{background:var(--bg3)}
             <div id="narSt"></div>
             <div id="narPlayer" style="display:none;margin-top:12px">
               <div class="audio-player">
-                <button class="play-btn" onclick="toggleAudio(&#39;nar&#39;)" id="playNar">▶</button>
-                <div class="progress-bar" onclick="seekAud(event,&#39;nar&#39;)"><div class="progress-fill" id="progNar"></div></div>
+                <button class="play-btn" onclick="toggleAudio('nar')" id="playNar">▶</button>
+                <div class="progress-bar" onclick="seekAud(event,'nar')"><div class="progress-fill" id="progNar"></div></div>
                 <span class="time-label" id="timeNar">0:00</span>
               </div>
               <div style="display:flex;gap:8px;margin-top:8px">
-                <button class="btn btn-ghost" style="flex:1" onclick="dlAudio(&#39;nar&#39;)">⬇ Baixar MP3</button>
+                <button class="btn btn-ghost" style="flex:1" onclick="dlAudio('nar')">⬇ Baixar MP3</button>
                 <button class="btn btn-ghost" style="flex:1" onclick="gerarSRT()">📄 Gerar SRT</button>
               </div>
             </div>
@@ -269,10 +269,35 @@ select option{background:var(--bg3)}
         <div class="panel-body" style="display:flex;flex-direction:column;gap:14px">
           <div><div class="label">TEMA DO VÍDEO</div><input type="text" id="rotTema" placeholder="Ex: A história do serial killer mais cruel do Brasil"></div>
           <div><div class="label">NICHO</div>
-            <select id="rotNicho">
-              <option>Canal Dark — Crimes Reais</option><option>Canal Dark — Mistérios e Conspirações</option>
-              <option>Canal Dark — Histórias de Terror</option><option>Canal Dark — Casos Policiais</option>
-              <option>Canal Dark — Psicologia Sombria</option><option>Canal Dark — Desaparecimentos</option>
+            <select id="rotNicho" onchange="updateSubnicho()">
+              <optgroup label="🔮 ESPIRITUALIDADE">
+                <option value="Espiritualidade | Física Quântica e Consciência">Espiritualidade → Física Quântica e Consciência</option>
+                <option value="Espiritualidade | Salto Quântico e Lei da Atração">Espiritualidade → Salto Quântico e Lei da Atração</option>
+                <option value="Espiritualidade | Mente Subconsciente e Neurociência">Espiritualidade → Mente Subconsciente e Neurociência</option>
+                <option value="Espiritualidade | Criação da Realidade e Manifestação">Espiritualidade → Criação da Realidade e Manifestação</option>
+                <option value="Espiritualidade | Frequência, Vibração e Energia">Espiritualidade → Frequência, Vibração e Energia</option>
+                <option value="Espiritualidade | Despertar Espiritual e Consciência">Espiritualidade → Despertar Espiritual e Consciência</option>
+                <option value="Espiritualidade | Mediunidade e Fenômenos Espirituais">Espiritualidade → Mediunidade e Fenômenos Espirituais</option>
+                <option value="Espiritualidade | Multiverso e Realidades Paralelas">Espiritualidade → Multiverso e Realidades Paralelas</option>
+              </optgroup>
+              <optgroup label="🔴 CRIMES REAIS">
+                <option value="Crimes Reais | Serial Killers">Crimes Reais → Serial Killers</option>
+                <option value="Crimes Reais | Casos Policiais Não Resolvidos">Crimes Reais → Casos Policiais Não Resolvidos</option>
+                <option value="Crimes Reais | Máfia e Crime Organizado">Crimes Reais → Máfia e Crime Organizado</option>
+                <option value="Crimes Reais | Feminicídio e Violência">Crimes Reais → Feminicídio e Violência</option>
+              </optgroup>
+              <optgroup label="👻 MISTÉRIO E PARANORMAL">
+                <option value="Mistério | Fenômenos Paranormais">Mistério → Fenômenos Paranormais</option>
+                <option value="Mistério | UFOs e Extraterrestres">Mistério → UFOs e Extraterrestres</option>
+                <option value="Mistério | Desaparecimentos Inexplicáveis">Mistério → Desaparecimentos Inexplicáveis</option>
+                <option value="Mistério | Conspirações e Sociedades Secretas">Mistério → Conspirações e Sociedades Secretas</option>
+              </optgroup>
+              <optgroup label="🧠 PSICOLOGIA">
+                <option value="Psicologia | Psicologia Sombria e Manipulação">Psicologia → Psicologia Sombria e Manipulação</option>
+                <option value="Psicologia | Narcisismo e Abuso Emocional">Psicologia → Narcisismo e Abuso Emocional</option>
+                <option value="Psicologia | Seitas e Lavagem Cerebral">Psicologia → Seitas e Lavagem Cerebral</option>
+                <option value="Psicologia | Transtornos Mentais e Psicopatas">Psicologia → Transtornos Mentais e Psicopatas</option>
+              </optgroup>
             </select>
           </div>
           <div><div class="label">APELO PSICOLÓGICO</div>
@@ -283,7 +308,16 @@ select option{background:var(--bg3)}
             </select>
           </div>
           <div><div class="label">DURAÇÃO</div>
-            <select id="rotDur"><option>3-5 minutos</option><option>5-8 minutos</option><option>8-12 minutos</option><option>12-15 minutos</option></select>
+            <select id="rotDur">
+              <option>3-5 minutos</option>
+              <option>5-8 minutos</option>
+              <option>8-12 minutos</option>
+              <option>12-15 minutos</option>
+              <option>15-20 minutos</option>
+              <option>20-30 minutos</option>
+              <option>30-45 minutos</option>
+              <option>45-60 minutos</option>
+            </select>
           </div>
           <div><div class="label">IDIOMA</div>
             <select id="rotIdioma"><option value="pt-BR">Português BR</option><option value="es">Espanhol</option><option value="en">Inglês</option><option value="de">Alemão</option></select>
@@ -332,11 +366,11 @@ select option{background:var(--bg3)}
           <div id="vozSt"></div>
           <div id="vozPlayer" style="display:none">
             <div class="audio-player">
-              <button class="play-btn" onclick="toggleAudio(&#39;voz&#39;)" id="playVoz">▶</button>
-              <div class="progress-bar" onclick="seekAud(event,&#39;voz&#39;)"><div class="progress-fill" id="progVoz"></div></div>
+              <button class="play-btn" onclick="toggleAudio('voz')" id="playVoz">▶</button>
+              <div class="progress-bar" onclick="seekAud(event,'voz')"><div class="progress-fill" id="progVoz"></div></div>
               <span class="time-label" id="timeVoz">0:00</span>
             </div>
-            <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="dlAudio(&#39;voz&#39;)">⬇ Baixar MP3</button>
+            <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="dlAudio('voz')">⬇ Baixar MP3</button>
           </div>
         </div>
       </div>
@@ -356,8 +390,8 @@ select option{background:var(--bg3)}
           <div><div class="label">FRASE DE IMPACTO</div><input type="text" id="thFrase" placeholder="VOCÊ NÃO VAI ACREDITAR" oninput="renderThumb()"></div>
           <div><div class="label">IMAGEM DE FUNDO</div>
             <div style="display:flex;gap:8px">
-              <input type="text" id="thImgPath" placeholder="Selecionar imagem..." readonly="" style="flex:1">
-              <button class="btn btn-ghost" onclick="document.getElementById(&#39;thImgFile&#39;).click()">📂</button>
+              <input type="text" id="thImgPath" placeholder="Selecionar imagem..." readonly style="flex:1">
+              <button class="btn btn-ghost" onclick="document.getElementById('thImgFile').click()">📂</button>
               <input type="file" id="thImgFile" accept="image/*" style="display:none" onchange="loadThumbImg(this)">
             </div>
           </div>
@@ -380,7 +414,7 @@ select option{background:var(--bg3)}
         <div class="panel-header"><div class="panel-title">PREVIEW 1280×720</div></div>
         <div class="panel-body">
           <div style="position:relative;width:100%;aspect-ratio:16/9">
-            <canvas id="thumbCanvas" style="width:100%;height:100%;border-radius:8px;display:block" width="1280" height="720"></canvas>
+            <canvas id="thumbCanvas" style="width:100%;height:100%;border-radius:8px;display:block"></canvas>
           </div>
         </div>
       </div>
@@ -398,18 +432,18 @@ select option{background:var(--bg3)}
         <div class="panel-body" style="display:flex;flex-direction:column;gap:14px">
           <div>
             <div class="label">ARQUIVO DE VÍDEO</div>
-            <div style="display:flex;gap:8px"><input type="text" id="ytVidPath" placeholder="Selecionar vídeo..." readonly="" style="flex:1"><button class="btn btn-ghost" onclick="document.getElementById(&#39;ytVidFile&#39;).click()">📂</button><input type="file" id="ytVidFile" accept="video/*" style="display:none" onchange="document.getElementById(&#39;ytVidPath&#39;).value=this.files[0]?.name||&#39;&#39;"></div>
+            <div style="display:flex;gap:8px"><input type="text" id="ytVidPath" placeholder="Selecionar vídeo..." readonly style="flex:1"><button class="btn btn-ghost" onclick="document.getElementById('ytVidFile').click()">📂</button><input type="file" id="ytVidFile" accept="video/*" style="display:none" onchange="document.getElementById('ytVidPath').value=this.files[0]?.name||''"></div>
           </div>
           <div>
             <div class="label">TÍTULO</div>
-            <input type="text" id="ytTit" placeholder="Título do vídeo..." maxlength="100" oninput="document.getElementById(&#39;ytTitCount&#39;).textContent=this.value.length+&#39;/100&#39;;document.getElementById(&#39;pvTit&#39;).textContent=this.value||&#39;Título do vídeo&#39;">
+            <input type="text" id="ytTit" placeholder="Título do vídeo..." maxlength="100" oninput="document.getElementById('ytTitCount').textContent=this.value.length+'/100';document.getElementById('pvTit').textContent=this.value||'Título do vídeo'">
             <div style="font-size:10px;font-family:var(--mono);color:var(--text3);margin-top:4px" id="ytTitCount">0/100</div>
           </div>
           <div><div class="label">DESCRIÇÃO</div><textarea id="ytDesc" rows="5" placeholder="Descrição com SEO..."></textarea></div>
           <div><div class="label">TAGS (separadas por vírgula)</div><input type="text" id="ytTags" placeholder="canal dark, crime real, mistério..."></div>
           <div>
             <div class="label">THUMBNAIL</div>
-            <div style="display:flex;gap:8px"><input type="text" id="ytThPath" placeholder="Selecionar thumbnail..." readonly="" style="flex:1"><button class="btn btn-ghost" onclick="document.getElementById(&#39;ytThFile&#39;).click()">🖼️</button><input type="file" id="ytThFile" accept="image/*" style="display:none" onchange="loadYTThumb(this)"></div>
+            <div style="display:flex;gap:8px"><input type="text" id="ytThPath" placeholder="Selecionar thumbnail..." readonly style="flex:1"><button class="btn btn-ghost" onclick="document.getElementById('ytThFile').click()">🖼️</button><input type="file" id="ytThFile" accept="image/*" style="display:none" onchange="loadYTThumb(this)"></div>
           </div>
           <div style="display:flex;gap:12px">
             <div style="flex:1"><div class="label">VISIBILIDADE</div><select id="ytVis"><option value="private">Privado</option><option value="unlisted">Não listado</option><option value="public">Público</option></select></div>
@@ -476,7 +510,32 @@ select option{background:var(--bg3)}
       <div class="panel-body">
         <div class="setting-row"><div><div class="setting-label">Nome do seu canal</div></div><input type="text" id="cfCanal" class="setting-input" placeholder="@seucanal"></div>
         <div class="setting-row"><div><div class="setting-label">Nicho principal</div></div>
-          <select id="cfNicho" class="setting-input"><option>Canal Dark — Crimes Reais</option><option>Canal Dark — Mistérios</option><option>Canal Dark — Terror</option><option>Canal Dark — Psicologia</option></select>
+          <select id="cfNicho" class="setting-input">
+            <optgroup label="🔮 ESPIRITUALIDADE">
+              <option>Espiritualidade | Física Quântica e Consciência</option>
+              <option>Espiritualidade | Salto Quântico e Lei da Atração</option>
+              <option>Espiritualidade | Mente Subconsciente e Neurociência</option>
+              <option>Espiritualidade | Criação da Realidade e Manifestação</option>
+              <option>Espiritualidade | Frequência, Vibração e Energia</option>
+              <option>Espiritualidade | Despertar Espiritual e Consciência</option>
+              <option>Espiritualidade | Mediunidade e Fenômenos Espirituais</option>
+              <option>Espiritualidade | Multiverso e Realidades Paralelas</option>
+            </optgroup>
+            <optgroup label="🔴 CRIMES REAIS">
+              <option>Crimes Reais | Serial Killers</option>
+              <option>Crimes Reais | Casos Policiais Não Resolvidos</option>
+              <option>Crimes Reais | Máfia e Crime Organizado</option>
+            </optgroup>
+            <optgroup label="👻 MISTÉRIO">
+              <option>Mistério | Fenômenos Paranormais</option>
+              <option>Mistério | UFOs e Extraterrestres</option>
+              <option>Mistério | Conspirações</option>
+            </optgroup>
+            <optgroup label="🧠 PSICOLOGIA">
+              <option>Psicologia | Psicologia Sombria</option>
+              <option>Psicologia | Narcisismo e Abuso Emocional</option>
+            </optgroup>
+          </select>
         </div>
         <div class="setting-row"><div><div class="setting-label">Idioma padrão</div></div>
           <select id="cfIdioma" class="setting-input"><option value="pt-BR">Português BR</option><option value="es">Espanhol</option><option value="en">Inglês</option><option value="de">Alemão</option></select>
@@ -743,23 +802,30 @@ async function gerarRoteiro(){
   const btn=document.getElementById('btnRot'); btn.disabled=true; btn.textContent='⏳ Gerando...';
   setSt('rotSt','Gerando roteiro com IA...','loading');
   document.getElementById('rotOut').value='';
-  const prompt=`Você é um roteirista especialista em canais dark do YouTube. Crie um roteiro completo e envolvente.
+  const nichoVal=document.getElementById('rotNicho').value;
+  const nichoParts=nichoVal.split('|');
+  const nicho=nichoParts[0]?.trim()||nichoVal;
+  const subnicho=nichoParts[1]?.trim()||nichoVal;
+  const prompt=`Você é um roteirista especialista em conteúdo para YouTube. Crie um roteiro completo, envolvente e autoral.
 
 TEMA: ${tema}
-NICHO: ${document.getElementById('rotNicho').value}
+NICHO: ${nicho}
+SUBNICHO: ${subnicho}
 APELO PSICOLÓGICO: ${document.getElementById('rotApelo').value}
 DURAÇÃO: ${document.getElementById('rotDur').value}
 IDIOMA: ${document.getElementById('rotIdioma').value}
 
-Regras:
-- Gancho poderoso nos primeiros 15 segundos
-- Use o apelo psicológico de forma consistente
-- Estilo investigativo e envolvente
-- Pausas dramáticas e variações de ritmo
-- Conclusão impactante
-- Escreva APENAS a narração, sem indicações técnicas
+Regras importantes:
+- Gancho poderoso nos primeiros 15 segundos que prenda o espectador
+- Use o subnicho "${subnicho}" como base para toda a narrativa
+- Use o apelo psicológico "${document.getElementById('rotApelo').value}" de forma consistente
+- Estilo narrativo envolvente, autoral e único
+- Para vídeos longos (acima de 15 min), divida em blocos temáticos bem estruturados
+- Pausas dramáticas, variações de ritmo e momentos de reflexão
+- Conclusão impactante com call to action natural
+- Escreva APENAS a narração, sem indicações técnicas, sem títulos de seção
 
-Escreva o roteiro:`;
+Escreva o roteiro completo:`;
   try{
     const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${c.gemini}`,{
       method:'POST',headers:{'Content-Type':'application/json'},
@@ -963,6 +1029,5 @@ window.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('page-planner').addEventListener('click',()=>{});
 });
 </script>
-
-
-</body></html>
+</body>
+</html>
