@@ -230,16 +230,18 @@ select option{background:var(--bg3)}
               <textarea id="narText" rows="6" placeholder="Cole aqui o roteiro do vídeo de hoje..."></textarea>
             </div>
             <div style="margin-bottom:12px">
-              <div class="label">VOZ</div>
+              <div class="label">VOZ (ElevenLabs)</div>
               <select id="narVoice">
-                <option value="Aoede">Aoede — Feminina, suave e expressiva</option>
-                <option value="Charon">Charon — Masculina, grave e autoritária</option>
-                <option value="Fenrir">Fenrir — Masculina, intensa e dramática</option>
-                <option value="Kore">Kore — Feminina, clara e envolvente</option>
-                <option value="Puck">Puck — Masculina, dinâmica e energética</option>
+                <option value="21m00Tcm4TlvDq8ikWAM">Rachel — Feminina, suave e expressiva (EN/PT)</option>
+                <option value="AZnzlk1XvdvUeBnXmlld">Domi — Feminina, forte e confiante</option>
+                <option value="EXAVITQu4vr4xnSDxMaL">Bella — Feminina, acolhedora e calorosa</option>
+                <option value="ErXwobaYiN019PkySvjV">Antoni — Masculina, suave e narrativa</option>
+                <option value="VR6AewLTigWG4xSOukaG">Arnold — Masculina, profunda e autoritária</option>
+                <option value="pNInz6obpgDQGcFmaJgB">Adam — Masculina, grave e envolvente</option>
+                <option value="yoZ06aMxZJJ28mfd3POQ">Sam — Masculina, dinâmica e energética</option>
               </select>
             </div>
-            <button class="btn btn-accent" style="width:100%;padding:11px" onclick="gerarNar()" id="btnNar">🎙️ Gerar Narração com Gemini</button>
+            <button class="btn btn-accent" style="width:100%;padding:11px" onclick="gerarNar()" id="btnNar">🎙️ Gerar Narração com ElevenLabs</button>
             <div id="narSt"></div>
             <div id="narPlayer" style="display:none;margin-top:12px">
               <div class="audio-player">
@@ -300,12 +302,27 @@ select option{background:var(--bg3)}
               </optgroup>
             </select>
           </div>
-          <div><div class="label">APELO PSICOLÓGICO</div>
+          <div><div class="label">APELO PSICOLÓGICO E TOM</div>
             <select id="rotApelo">
-              <option>Suspense e Tensão Crescente</option><option>Choque e Revelação</option>
-              <option>Medo do Desconhecido</option><option>Empatia e Drama Emocional</option>
-              <option>Curiosidade Mórbida</option><option>Senso de Justiça</option>
+              <optgroup label="🔮 ESPIRITUAL / TRANSFORMADOR">
+                <option value="Transformação Interior — tom reflexivo, filosófico e acolhedor">Transformação Interior — reflexivo e acolhedor</option>
+                <option value="Despertar da Consciência — tom provocador, questionador e expansivo">Despertar da Consciência — provocador e expansivo</option>
+                <option value="Urgência Espiritual — tom intenso, urgente e transformador">Urgência Espiritual — intenso e transformador</option>
+                <option value="Revelação e Epifania — tom surpreendente, revelador e impactante">Revelação e Epifania — surpreendente e impactante</option>
+                <option value="Cura e Libertação — tom suave, empático e esperançoso">Cura e Libertação — suave e esperançoso</option>
+              </optgroup>
+              <optgroup label="🧠 PSICOLÓGICO / EMOCIONAL">
+                <option value="Curiosidade e Mistério — tom investigativo e intrigante">Curiosidade e Mistério — investigativo e intrigante</option>
+                <option value="Empatia e Drama Emocional — tom humano, íntimo e tocante">Empatia e Drama Emocional — humano e tocante</option>
+                <option value="Choque e Revelação — tom impactante, direto e surpreendente">Choque e Revelação — impactante e direto</option>
+                <option value="Senso de Justiça — tom indignado, forte e motivador">Senso de Justiça — indignado e motivador</option>
+                <option value="Suspense e Tensão Crescente — tom tenso, narrativo e envolvente">Suspense e Tensão — tenso e envolvente</option>
+              </optgroup>
             </select>
+          </div>
+          <div><div class="label">QUANTIDADE MÍNIMA DE PALAVRAS</div>
+            <input type="number" id="rotPalavras" placeholder="Ex: 3000" min="500" max="15000" value="3000" style="resize:none">
+            <div style="font-size:10px;font-family:var(--mono);color:var(--text3);margin-top:4px">~150 palavras por minuto — 30min = 4500 palavras</div>
           </div>
           <div><div class="label">DURAÇÃO</div>
             <select id="rotDur">
@@ -322,16 +339,28 @@ select option{background:var(--bg3)}
           <div><div class="label">IDIOMA</div>
             <select id="rotIdioma"><option value="pt-BR">Português BR</option><option value="es">Espanhol</option><option value="en">Inglês</option><option value="de">Alemão</option></select>
           </div>
+          <div><div class="label">SEU CTA FIXO</div>
+            <textarea id="rotCTA" rows="3" placeholder="Ex: Se você ainda não se inscreveu no canal, faça isso agora... E se quiser aprofundar essa transformação, acesse o Código da Rendição..."></textarea>
+          </div>
+          <div><div class="label">ESTRUTURA / MODELO DE ROTEIRO</div>
+            <textarea id="rotModelo" rows="5" placeholder="Cole aqui sua estrutura preferida de roteiro. Ex:&#10;1. Gancho (30s)&#10;2. Apresentação do tema (2min)&#10;3. Desenvolvimento em 3 blocos&#10;4. Virada emocional&#10;5. CTA e encerramento&#10;&#10;A IA vai seguir essa estrutura para gerar o roteiro."></textarea>
+          </div>
         </div>
       </div>
       <div class="panel">
-        <div class="panel-header"><div class="panel-title">ROTEIRO GERADO</div><button class="btn btn-ghost" onclick="copiarRot()" style="font-size:11px;padding:5px 10px">Copiar</button></div>
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">ROTEIRO GERADO</div>
+            <div class="panel-sub" id="rotWordCount"></div>
+          </div>
+          <button class="btn btn-ghost" onclick="copiarRot()" style="font-size:11px;padding:5px 10px">Copiar</button>
+        </div>
         <div class="panel-body">
-          <textarea id="rotOut" rows="16" placeholder="O roteiro aparecerá aqui após clicar em Gerar..."></textarea>
+          <textarea id="rotOut" rows="16" placeholder="O roteiro aparecerá aqui após clicar em Gerar..." oninput="contarPalavras()"></textarea>
           <div id="rotSt"></div>
           <div style="display:flex;gap:8px;margin-top:10px">
-            <button class="btn btn-ghost" style="flex:1" onclick="sendRotToNar()">Usar na Narração →</button>
-            <button class="btn btn-ghost" style="flex:1" onclick="sendRotToYT()">Gerar Títulos →</button>
+            <button class="btn btn-ghost" style="flex:1" onclick="sendRotToNar()">🎙️ Narração →</button>
+            <button class="btn btn-ghost" style="flex:1" onclick="sendRotToYT()">📤 Títulos →</button>
           </div>
         </div>
       </div>
@@ -499,8 +528,8 @@ select option{background:var(--bg3)}
       <div class="panel-header"><div class="panel-title">CHAVES DE API</div></div>
       <div class="panel-body">
         <div class="setting-row"><div><div class="setting-label">Claude API Key ✍️</div><div class="setting-desc">console.anthropic.com → API Keys — roteiros, títulos, análises</div></div><input type="password" id="cfClaude" class="setting-input" placeholder="sk-ant-..."></div>
-        <div class="setting-row"><div><div class="setting-label">Gemini API Key 🎙️🖼️</div><div class="setting-desc">Google Cloud Console → voz TTS e geração de imagens</div></div><input type="password" id="cfGemini" class="setting-input" placeholder="AIza..."></div>
-        <div class="setting-row"><div><div class="setting-label">ElevenLabs API Key 🎙️</div><div class="setting-desc">elevenlabs.io → My Account → API Keys — voz premium</div></div><input type="password" id="cfEleven" class="setting-input" placeholder="sk_..."></div>
+        <div class="setting-row"><div><div class="setting-label">ElevenLabs API Key 🎙️</div><div class="setting-desc">elevenlabs.io → My Account → API Keys — voz neural</div></div><input type="password" id="cfEleven" class="setting-input" placeholder="sk_..."></div>
+        <div class="setting-row"><div><div class="setting-label">OpenAI API Key 📝</div><div class="setting-desc">platform.openai.com → API Keys — Whisper (transcrição e legendas)</div></div><input type="password" id="cfOpenAI" class="setting-input" placeholder="sk-..."></div>
         <div class="setting-row"><div><div class="setting-label">Pexels API Key 🎬</div><div class="setting-desc">pexels.com/api — vídeos gratuitos</div></div><input type="password" id="cfPexels" class="setting-input" placeholder="..."></div>
         <div class="setting-row"><div><div class="setting-label">Pixabay API Key 🎬</div><div class="setting-desc">pixabay.com/api/docs — vídeos gratuitos</div></div><input type="password" id="cfPixabay" class="setting-input" placeholder="..."></div>
         <div class="setting-row"><div><div class="setting-label">YouTube API Key 📤</div><div class="setting-desc">Google Cloud Console → YouTube Data API v3</div></div><input type="password" id="cfYT" class="setting-input" placeholder="AIza..."></div>
@@ -559,12 +588,12 @@ let st={vid:0,rot:0,nar:0,pub:0};
 
 // CONFIG
 const LS=(k)=>localStorage.getItem('df_'+k)||'';
-const cfg=()=>({claude:LS('claude'),gemini:LS('gemini'),eleven:LS('eleven'),pexels:LS('pexels'),pixabay:LS('pixabay'),yt:LS('yt'),canal:LS('canal'),nicho:LS('nicho'),idioma:LS('idioma')});
+const cfg=()=>({claude:LS('claude'),eleven:LS('eleven'),openai:LS('openai'),pexels:LS('pexels'),pixabay:LS('pixabay'),yt:LS('yt'),canal:LS('canal'),nicho:LS('nicho'),idioma:LS('idioma'),cta:LS('cta'),modelo:LS('modelo')});
 
 function saveConfig(){
   localStorage.setItem('df_claude',document.getElementById('cfClaude').value.trim());
-  localStorage.setItem('df_gemini',document.getElementById('cfGemini').value.trim());
   localStorage.setItem('df_eleven',document.getElementById('cfEleven').value.trim());
+  localStorage.setItem('df_openai',document.getElementById('cfOpenAI').value.trim());
   localStorage.setItem('df_pexels',document.getElementById('cfPexels').value.trim());
   localStorage.setItem('df_pixabay',document.getElementById('cfPixabay').value.trim());
   localStorage.setItem('df_yt',document.getElementById('cfYT').value.trim());
@@ -577,8 +606,8 @@ function saveConfig(){
 function loadConfig(){
   const c=cfg();
   document.getElementById('cfClaude').value=c.claude;
-  document.getElementById('cfGemini').value=c.gemini;
   document.getElementById('cfEleven').value=c.eleven;
+  document.getElementById('cfOpenAI').value=c.openai;
   document.getElementById('cfPexels').value=c.pexels;
   document.getElementById('cfPixabay').value=c.pixabay;
   document.getElementById('cfYT').value=c.yt;
@@ -700,21 +729,31 @@ function renderTL(){
   document.getElementById('tlCount').textContent=clips.length+' clipe(s)';
 }
 
-// GEMINI TTS
-async function callTTS(text,voice){
+// ELEVENLABS TTS
+async function callTTS(text,voiceId){
   const c=cfg();
-  if(!c.gemini)throw new Error('Adicione a Gemini API Key em Configurações');
-  const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${c.gemini}`,{
-    method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({contents:[{parts:[{text}]}],generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:voice}}}}})
+  if(!c.eleven)throw new Error('Adicione a ElevenLabs API Key em Configurações');
+  const r=await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','xi-api-key':c.eleven},
+    body:JSON.stringify({
+      text,
+      model_id:'eleven_multilingual_v2',
+      voice_settings:{stability:0.5,similarity_boost:0.75,style:0.5,use_speaker_boost:true}
+    })
   });
-  const d=await r.json();
-  if(d.error)throw new Error(d.error.message);
-  const audio=d.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-  if(!audio)throw new Error('Nenhum áudio retornado pela API');
-  const bytes=atob(audio),arr=new Uint8Array(bytes.length);
-  for(let i=0;i<bytes.length;i++)arr[i]=bytes.charCodeAt(i);
-  return new Blob([arr],{type:'audio/wav'});
+  if(!r.ok){const e=await r.json();throw new Error(e.detail?.message||'Erro ElevenLabs: '+r.status);}
+  return await r.blob();
+}
+
+function contarPalavras(){
+  const el=document.getElementById('rotOut'); if(!el)return;
+  const text=el.value;
+  const count=text.trim().split(/\s+/).filter(w=>w).length;
+  const minEl=document.getElementById('rotPalavras');
+  const min=parseInt(minEl?.value||3000);
+  const wc=document.getElementById('rotWordCount');
+  if(wc)wc.textContent=`${count.toLocaleString()} palavras ${count>=min?'✅':'⚠️ abaixo do mínimo ('+min.toLocaleString()+')'}`;
 }
 
 async function gerarNar(){
@@ -722,7 +761,7 @@ async function gerarNar(){
   const voice=document.getElementById('narVoice').value;
   if(!text){setSt('narSt','Digite o roteiro para narrar','error');return;}
   const btn=document.getElementById('btnNar'); btn.disabled=true; btn.textContent='⏳ Gerando...';
-  setSt('narSt','Gerando narração com Gemini TTS...','loading');
+  setSt('narSt','Gerando narração com ElevenLabs...','loading');
   document.getElementById('narPlayer').style.display='none';
   try{
     const blob=await callTTS(text,voice);
@@ -735,14 +774,14 @@ async function gerarNar(){
     setSt('narSt','Narração gerada com sucesso!','success');
     st.nar++; document.getElementById('ds-nar').textContent=st.nar;
   }catch(e){setSt('narSt','Erro: '+e.message,'error');}
-  finally{btn.disabled=false; btn.textContent='🎙️ Gerar Narração com Gemini';}
+  finally{btn.disabled=false; btn.textContent='🎙️ Gerar Narração com ElevenLabs';}
 }
 
 async function gerarVoz(){
   const text=document.getElementById('vozTxt').value.trim();
   const voice=document.getElementById('vozSel').value;
   if(!text){setSt('vozSt','Digite o texto','error');return;}
-  setSt('vozSt','Gerando narração...','loading');
+  setSt('vozSt','Gerando narração com ElevenLabs...','loading');
   document.getElementById('vozPlayer').style.display='none';
   try{
     const blob=await callTTS(text,voice);
@@ -825,26 +864,31 @@ async function gerarRoteiro(){
   const nichoParts=nichoVal.split('|');
   const nicho=nichoParts[0]?.trim()||nichoVal;
   const subnicho=nichoParts[1]?.trim()||nichoVal;
+  const palavras=document.getElementById('rotPalavras').value||'3000';
+  const cta=document.getElementById('rotCTA').value.trim();
+  const modelo=document.getElementById('rotModelo').value.trim();
   const prompt=`Você é um roteirista especialista em conteúdo para YouTube. Crie um roteiro completo, envolvente e autoral.
 
 TEMA: ${tema}
 NICHO: ${nicho}
 SUBNICHO: ${subnicho}
-APELO PSICOLÓGICO: ${document.getElementById('rotApelo').value}
-DURAÇÃO: ${document.getElementById('rotDur').value}
+APELO PSICOLÓGICO E TOM: ${document.getElementById('rotApelo').value}
+MÍNIMO DE PALAVRAS: ${palavras} palavras
 IDIOMA: ${document.getElementById('rotIdioma').value}
+${modelo ? `\nESTRUTURA A SEGUIR:\n${modelo}` : ''}
+${cta ? `\nCTA FIXO (incluir no final do roteiro):\n${cta}` : ''}
 
 Regras importantes:
-- Gancho poderoso nos primeiros 15 segundos que prenda o espectador
-- Use o subnicho "${subnicho}" como base para toda a narrativa
-- Use o apelo psicológico "${document.getElementById('rotApelo').value}" de forma consistente
-- Estilo narrativo envolvente, autoral e único
-- Para vídeos longos (acima de 15 min), divida em blocos temáticos bem estruturados
+- Gancho poderoso nos primeiros 15 segundos
+- Use o subnicho "${subnicho}" como base da narrativa
+- Siga rigorosamente o tom: "${document.getElementById('rotApelo').value}"
+- Escreva no MÍNIMO ${palavras} palavras
 - Pausas dramáticas, variações de ritmo e momentos de reflexão
-- Conclusão impactante com call to action natural
-- Escreva APENAS a narração, sem indicações técnicas, sem títulos de seção
+- Se tiver estrutura definida, siga ela fielmente
+- Inclua o CTA no momento certo do roteiro
+- Escreva APENAS a narração, sem indicações técnicas
 
-Escreva o roteiro completo:`;
+Escreva o roteiro completo agora:`;
   try{
     const text=await callClaude(prompt);
     document.getElementById('rotOut').value=text;
