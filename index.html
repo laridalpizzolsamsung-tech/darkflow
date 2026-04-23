@@ -251,8 +251,12 @@ select option{background:var(--bg3)}
               </div>
               <div style="display:flex;gap:8px;margin-top:8px">
                 <button class="btn btn-ghost" style="flex:1" onclick="dlAudio('nar')">⬇ Baixar MP3</button>
-                <button class="btn btn-ghost" style="flex:1" onclick="gerarSRT()">📄 Gerar SRT</button>
+                <button class="btn btn-ghost" style="flex:1" onclick="gerarSRTWhisper()">📄 Gerar SRT</button>
               </div>
+              <div style="margin-top:8px">
+                <button class="btn btn-ghost" style="width:100%" onclick="transcreverAudio()">🎯 Transcrever com Whisper</button>
+              </div>
+              <div id="whisperSt"></div>
             </div>
           </div>
         </div>
@@ -829,7 +833,50 @@ function dlAudio(k){
 }
 function fmtTime(s){return `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`||'0:00';}
 
-function gerarSRT(){
+// WHISPER — TRANSCRIÇÃO E SRT
+async function transcreverAudio(){
+  const c=cfg();
+  if(!c.openai){setSt('whisperSt','Adicione a OpenAI API Key em Configurações','error');return;}
+  const audio=audios.nar;
+  if(!audio||!audio._blob){setSt('whisperSt','Gere a narração primeiro','error');return;}
+  setSt('whisperSt','Transcrevendo com Whisper...','loading');
+  try{
+    const formData=new FormData();
+    formData.append('file',new File([audio._blob],'audio.mp3',{type:'audio/mpeg'}));
+    formData.append('model','whisper-1');
+    formData.append('language','pt');
+    formData.append('response_format','verbose_json');
+    formData.append('timestamp_granularities[]','segment');
+    const r=await fetch('https://api.openai.com/v1/audio/transcriptions',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+c.openai},
+      body:formData
+    });
+    if(!r.ok){const e=await r.json();throw new Error(e.error?.message||'Erro Whisper: '+r.status);}
+    const d=await r.json();
+    let srt='';
+    const segs=d.segments||[];
+    segs.forEach((s,i)=>{srt+=`${i+1}\n${fmtSRT(s.start)} --> ${fmtSRT(s.end)}\n${s.text.trim()}\n\n`;});
+    window._lastSRT=srt;
+    document.getElementById('whisperSt').innerHTML=`<div class="status-bar success">✅ ${segs.length} segmentos transcritos! <button class="btn btn-ghost" style="font-size:11px;padding:3px 10px;margin-left:8px" onclick="dlSRTWhisper()">⬇ Baixar SRT</button></div>`;
+  }catch(e){setSt('whisperSt','Erro: '+e.message,'error');}
+}
+
+async function gerarSRTWhisper(){
+  const c=cfg();
+  if(c.openai&&audios.nar&&audios.nar._blob){await transcreverAudio();return;}
+  gerarSRT();
+}
+
+function dlSRTWhisper(){
+  if(!window._lastSRT){notify('Transcreva o áudio primeiro','error');return;}
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([window._lastSRT],{type:'text/plain'}));
+  a.download='legendas_darkflow.srt'; a.click();
+  notify('SRT baixado!','success');
+}
+
+
   const text=document.getElementById('narText').value.trim();
   if(!text){notify('Nenhum texto para gerar SRT','error');return;}
   const sents=text.match(/[^.!?]+[.!?]+/g)||[text];
