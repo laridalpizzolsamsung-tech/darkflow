@@ -121,6 +121,7 @@ select option{background:var(--bg3)}
     <div class="nav-section">CONTEÚDO</div>
     <div class="nav-item" data-page="roteiro"><span class="icon">✍️</span>Roteiro IA</div>
     <div class="nav-item" data-page="voz"><span class="icon">🎙️</span>Narração</div>
+    <div class="nav-item" data-page="gerar"><span class="icon">🎨</span>Gerar Imagem / Vídeo</div>
     <div class="nav-item" data-page="thumbnail"><span class="icon">🖼️</span>Thumbnail</div>
     <div class="nav-section">DISTRIBUIÇÃO</div>
     <div class="nav-item" data-page="publicar"><span class="icon">📤</span>Publicar no YouTube</div>
@@ -418,6 +419,124 @@ select option{background:var(--bg3)}
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- GERAR IMAGEM / VÍDEO -->
+<div class="page" id="page-gerar">
+  <div class="topbar"><div class="topbar-title">Gerar Imagem / Vídeo com IA</div></div>
+  <div class="content">
+    <div class="tabs" style="max-width:400px;margin-bottom:20px">
+      <div class="tab active" id="tab-img" onclick="switchGerarTab('img')">🎨 Imagem (Imagen 4)</div>
+      <div class="tab" id="tab-vid" onclick="switchGerarTab('vid')">🎬 Vídeo (Veo3)</div>
+    </div>
+
+    <!-- IMAGEM -->
+    <div id="gerar-img">
+      <div class="grid-2" style="gap:20px;align-items:start">
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">🎨 GERAR IMAGEM COM IMAGEN 4</div></div>
+          <div class="panel-body" style="display:flex;flex-direction:column;gap:14px">
+            <div>
+              <div class="label">PROMPT DA IMAGEM</div>
+              <textarea id="imgPrompt" rows="5" placeholder="Descreva a imagem em detalhes...&#10;Ex: Homem meditando sob uma árvore dourada, luz suave ao entardecer, estilo cinematográfico, cores quentes, ultra realista"></textarea>
+            </div>
+            <div>
+              <div class="label">ESTILO</div>
+              <select id="imgEstilo">
+                <option value="cinematic, dramatic lighting, ultra realistic">Cinematográfico e dramático</option>
+                <option value="spiritual, ethereal, soft light, mystical">Espiritual e etéreo</option>
+                <option value="photorealistic, natural light, professional photography">Fotorrealista</option>
+                <option value="dark, moody, atmospheric, noir">Dark e atmosférico</option>
+                <option value="vibrant colors, energy, light beams, cosmic">Cósmico e energético</option>
+                <option value="minimalist, clean, symbolic">Minimalista e simbólico</option>
+              </select>
+            </div>
+            <div>
+              <div class="label">PROPORÇÃO</div>
+              <select id="imgRatio">
+                <option value="16:9">16:9 — YouTube horizontal</option>
+                <option value="9:16">9:16 — Shorts / Reels</option>
+                <option value="1:1">1:1 — Quadrado</option>
+                <option value="4:3">4:3 — Padrão</option>
+              </select>
+            </div>
+            <div>
+              <div class="label">QUANTIDADE</div>
+              <select id="imgQtd">
+                <option value="1">1 imagem</option>
+                <option value="2">2 imagens</option>
+                <option value="4">4 imagens</option>
+              </select>
+            </div>
+            <button class="btn btn-accent" style="width:100%;padding:11px" onclick="gerarImagem()" id="btnGerarImg">🎨 Gerar com Imagen 4</button>
+            <div id="imgSt"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">RESULTADO</div></div>
+          <div class="panel-body">
+            <div id="imgResultado" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;min-height:200px">
+              <div style="grid-column:1/-1;display:flex;align-items:center;justify-content:center;height:200px;color:var(--text3);font-size:12px;font-family:var(--mono)">As imagens geradas aparecerão aqui</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VÍDEO -->
+    <div id="gerar-vid" style="display:none">
+      <div class="grid-2" style="gap:20px;align-items:start">
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">🎬 GERAR VÍDEO COM VEO3</div></div>
+          <div class="panel-body" style="display:flex;flex-direction:column;gap:14px">
+            <div>
+              <div class="label">PROMPT DO VÍDEO</div>
+              <textarea id="vidPrompt" rows="5" placeholder="Descreva a cena em detalhes...&#10;Ex: Homem caminhando em floresta mística ao amanhecer, névoa suave, câmera lenta, luz dourada entre as árvores, cinematográfico"></textarea>
+            </div>
+            <div>
+              <div class="label">ESTILO DO VÍDEO</div>
+              <select id="vidEstilo">
+                <option value="cinematic, slow motion, dramatic lighting">Cinematográfico em câmera lenta</option>
+                <option value="spiritual, ethereal, soft movement, mystical atmosphere">Espiritual e etéreo</option>
+                <option value="documentary style, natural movement, realistic">Documental e realista</option>
+                <option value="dark, atmospheric, moody, noir cinematic">Dark e atmosférico</option>
+                <option value="nature, aerial view, epic landscape">Natureza e paisagem épica</option>
+                <option value="abstract, energy flow, cosmic, visual meditation">Abstrato e meditativo</option>
+              </select>
+            </div>
+            <div>
+              <div class="label">DURAÇÃO</div>
+              <select id="vidDur">
+                <option value="5">5 segundos</option>
+                <option value="8">8 segundos</option>
+              </select>
+            </div>
+            <div>
+              <div class="label">PROPORÇÃO</div>
+              <select id="vidRatio">
+                <option value="16:9">16:9 — YouTube horizontal</option>
+                <option value="9:16">9:16 — Shorts</option>
+              </select>
+            </div>
+            <div style="padding:12px;background:rgba(232,255,71,.08);border:1px solid rgba(232,255,71,.2);border-radius:8px;font-size:11px;font-family:var(--mono);color:var(--accent)">
+              ⚡ Veo3 gera vídeos com áudio sincronizado automaticamente. Geração leva 2-5 minutos.
+            </div>
+            <button class="btn btn-accent" style="width:100%;padding:11px" onclick="gerarVideo()" id="btnGerarVid">🎬 Gerar com Veo3</button>
+            <div id="vidSt"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">RESULTADO</div></div>
+          <div class="panel-body">
+            <div id="vidResultado" style="min-height:200px;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:12px;font-family:var(--mono)">
+              O vídeo gerado aparecerá aqui
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -970,6 +1089,137 @@ function loadThumbImg(input){
   reader.onload=e=>{thumbImg=new Image();thumbImg.onload=renderThumb;thumbImg.src=e.target.result;};
   reader.readAsDataURL(input.files[0]);
 }
+// GERAR IMAGEM / VÍDEO
+function switchGerarTab(tab){
+  document.getElementById('gerar-img').style.display=tab==='img'?'block':'none';
+  document.getElementById('gerar-vid').style.display=tab==='vid'?'block':'none';
+  document.getElementById('tab-img').classList.toggle('active',tab==='img');
+  document.getElementById('tab-vid').classList.toggle('active',tab==='vid');
+}
+
+async function gerarImagem(){
+  const c=cfg();
+  if(!c.gemini){setSt('imgSt','Adicione a Gemini API Key em Configurações','error');return;}
+  const prompt=document.getElementById('imgPrompt').value.trim();
+  if(!prompt){setSt('imgSt','Digite o prompt da imagem','error');return;}
+  const estilo=document.getElementById('imgEstilo').value;
+  const ratio=document.getElementById('imgRatio').value;
+  const qtd=parseInt(document.getElementById('imgQtd').value);
+  const btn=document.getElementById('btnGerarImg');
+  btn.disabled=true; btn.textContent='⏳ Gerando...';
+  setSt('imgSt','Gerando com Imagen 4...','loading');
+  const promptCompleto=`${prompt}, ${estilo}`;
+  try{
+    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${c.gemini}`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({instances:[{prompt:promptCompleto}],parameters:{sampleCount:qtd,aspectRatio:ratio}})
+    });
+    const d=await r.json();
+    if(d.error)throw new Error(d.error.message);
+    const imgs=d.predictions||[];
+    const container=document.getElementById('imgResultado');
+    container.innerHTML='';
+    let count=0;
+    imgs.forEach((pred,i)=>{
+      if(pred.bytesBase64Encoded){
+        count++;
+        const src=`data:image/png;base64,${pred.bytesBase64Encoded}`;
+        const div=document.createElement('div');
+        div.style.cssText='position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--border)';
+        div.innerHTML=`
+          <img src="${src}" style="width:100%;display:block;border-radius:8px">
+          <div style="display:flex;gap:6px;padding:8px">
+            <button class="btn btn-ghost" style="flex:1;font-size:11px;padding:5px" onclick="dlImagem(this)">⬇ Baixar</button>
+            <button class="btn btn-ghost" style="flex:1;font-size:11px;padding:5px" onclick="usarComoThumb(this)">🖼️ Thumb</button>
+            <button class="btn btn-ghost" style="flex:1;font-size:11px;padding:5px" onclick="addImgTimeline(this)">➕ Timeline</button>
+          </div>`;
+        div.querySelector('button:nth-child(1)').dataset.src=src;
+        div.querySelector('button:nth-child(2)').dataset.src=src;
+        div.querySelector('button:nth-child(3)').dataset.src=src;
+        container.appendChild(div);
+      }
+    });
+    if(count===0)throw new Error('Nenhuma imagem retornada. Verifique se a Gemini API Key tem acesso ao Imagen 4.');
+    setSt('imgSt',`${count} imagem(ns) gerada(s)!`,'success');
+  }catch(e){setSt('imgSt','Erro: '+e.message,'error');}
+  finally{btn.disabled=false; btn.textContent='🎨 Gerar com Imagen 4';}
+}
+
+function dlImagem(btn){
+  const src=btn.dataset.src||btn.closest('div').querySelector('img').src;
+  const a=document.createElement('a'); a.href=src; a.download='darkflow_imagem.png'; a.click();
+  notify('Imagem baixada!','success');
+}
+function usarComoThumb(btn){
+  const src=btn.dataset.src||btn.closest('div').querySelector('img').src;
+  thumbImg=new Image(); thumbImg.onload=renderThumb; thumbImg.src=src;
+  nav('thumbnail'); notify('Imagem enviada para Thumbnail!','success');
+}
+function addImgTimeline(btn){
+  const src=btn.dataset.src||btn.closest('div').querySelector('img').src;
+  clips.push({url:src,name:'imagem-ia',type:'image',thumb:src});
+  renderTL(); notify('Imagem adicionada à timeline!','success');
+}
+
+async function gerarVideo(){
+  const c=cfg();
+  if(!c.gemini){setSt('vidSt','Adicione a Gemini API Key em Configurações','error');return;}
+  const prompt=document.getElementById('vidPrompt').value.trim();
+  if(!prompt){setSt('vidSt','Digite o prompt do vídeo','error');return;}
+  const estilo=document.getElementById('vidEstilo').value;
+  const dur=document.getElementById('vidDur').value;
+  const ratio=document.getElementById('vidRatio').value;
+  const btn=document.getElementById('btnGerarVid');
+  btn.disabled=true; btn.textContent='⏳ Gerando (2-5 min)...';
+  setSt('vidSt','Enviando para Veo3... aguarde.','loading');
+  const promptCompleto=`${prompt}, ${estilo}`;
+  try{
+    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-preview:predictLongRunning?key=${c.gemini}`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({instances:[{prompt:promptCompleto}],parameters:{aspectRatio:ratio,durationSeconds:parseInt(dur),enhancePrompt:true}})
+    });
+    const d=await r.json();
+    if(d.error)throw new Error(d.error.message);
+    const operationName=d.name;
+    if(!operationName)throw new Error('Operação não iniciada');
+    setSt('vidSt','Veo3 processando... verificando a cada 15s','loading');
+    let attempts=0;
+    const checkStatus=async()=>{
+      attempts++;
+      try{
+        const r2=await fetch(`https://generativelanguage.googleapis.com/v1beta/${operationName}?key=${c.gemini}`);
+        const d2=await r2.json();
+        if(d2.error)throw new Error(d2.error.message);
+        if(d2.done){
+          const videos=d2.response?.predictions||[];
+          const container=document.getElementById('vidResultado');
+          if(videos.length>0&&videos[0].bytesBase64Encoded){
+            const src=`data:video/mp4;base64,${videos[0].bytesBase64Encoded}`;
+            container.innerHTML=`
+              <div>
+                <video src="${src}" controls style="width:100%;border-radius:8px;margin-bottom:10px"></video>
+                <div style="display:flex;gap:8px">
+                  <button class="btn btn-ghost" style="flex:1" onclick="const a=document.createElement('a');a.href='${src}';a.download='darkflow_video.mp4';a.click()">⬇ Baixar MP4</button>
+                  <button class="btn btn-ghost" style="flex:1" onclick="clips.push({url:'${src}',name:'video-ia',type:'video',thumb:''});renderTL();notify('Adicionado!','success')">➕ Timeline</button>
+                </div>
+              </div>`;
+            setSt('vidSt','Vídeo gerado com sucesso!','success');
+            btn.disabled=false; btn.textContent='🎬 Gerar com Veo3';
+          } else {
+            throw new Error('Nenhum vídeo retornado');
+          }
+        } else if(attempts<20){
+          setSt('vidSt',`Veo3 processando... ${attempts*15}s / ~120s`,'loading');
+          setTimeout(checkStatus,15000);
+        } else {
+          throw new Error('Timeout — geração demorou muito, tente novamente');
+        }
+      }catch(e){setSt('vidSt','Erro: '+e.message,'error');btn.disabled=false;btn.textContent='🎬 Gerar com Veo3';}
+    };
+    setTimeout(checkStatus,15000);
+  }catch(e){setSt('vidSt','Erro: '+e.message,'error');btn.disabled=false;btn.textContent='🎬 Gerar com Veo3';}
+}
+
 function renderThumb(){
   const canvas=document.getElementById('thumbCanvas');
   canvas.width=1280; canvas.height=720;
