@@ -542,6 +542,7 @@ select option{background:var(--bg3)}
       <div class="panel-header"><div class="panel-title">CHAVES DE API</div></div>
       <div class="panel-body">
         <div class="setting-row"><div><div class="setting-label">Claude API Key ✍️</div><div class="setting-desc">console.anthropic.com → API Keys — roteiros, títulos, análises</div></div><input type="password" id="cfClaude" class="setting-input" placeholder="sk-ant-..."></div>
+        <div class="setting-row"><div><div class="setting-label">Gemini API Key 🎨🎬</div><div class="setting-desc">aistudio.google.com → Get API Key — imagens Imagen 4 e vídeos Veo3</div></div><input type="password" id="cfGemini" class="setting-input" placeholder="AIza..."></div>
         <div class="setting-row"><div><div class="setting-label">ElevenLabs API Key 🎙️</div><div class="setting-desc">elevenlabs.io → My Account → API Keys — voz neural</div></div><input type="password" id="cfEleven" class="setting-input" placeholder="sk_..."></div>
         <div class="setting-row"><div><div class="setting-label">OpenAI API Key 📝</div><div class="setting-desc">platform.openai.com → API Keys — Whisper (transcrição e legendas)</div></div><input type="password" id="cfOpenAI" class="setting-input" placeholder="sk-..."></div>
         <div class="setting-row"><div><div class="setting-label">Pexels API Key 🎬</div><div class="setting-desc">pexels.com/api — vídeos gratuitos</div></div><input type="password" id="cfPexels" class="setting-input" placeholder="..."></div>
@@ -602,10 +603,11 @@ let st={vid:0,rot:0,nar:0,pub:0};
 
 // CONFIG
 const LS=(k)=>localStorage.getItem('df_'+k)||'';
-const cfg=()=>({claude:LS('claude'),eleven:LS('eleven'),openai:LS('openai'),pexels:LS('pexels'),pixabay:LS('pixabay'),yt:LS('yt'),canal:LS('canal'),nicho:LS('nicho'),idioma:LS('idioma'),cta:LS('cta'),modelo:LS('modelo')});
+const cfg=()=>({claude:LS('claude'),gemini:LS('gemini'),eleven:LS('eleven'),openai:LS('openai'),pexels:LS('pexels'),pixabay:LS('pixabay'),yt:LS('yt'),canal:LS('canal'),nicho:LS('nicho'),idioma:LS('idioma'),cta:LS('cta'),modelo:LS('modelo')});
 
 function saveConfig(){
   localStorage.setItem('df_claude',document.getElementById('cfClaude').value.trim());
+  localStorage.setItem('df_gemini',document.getElementById('cfGemini').value.trim());
   localStorage.setItem('df_eleven',document.getElementById('cfEleven').value.trim());
   localStorage.setItem('df_openai',document.getElementById('cfOpenAI').value.trim());
   localStorage.setItem('df_pexels',document.getElementById('cfPexels').value.trim());
@@ -620,6 +622,7 @@ function saveConfig(){
 function loadConfig(){
   const c=cfg();
   document.getElementById('cfClaude').value=c.claude;
+  document.getElementById('cfGemini').value=c.gemini;
   document.getElementById('cfEleven').value=c.eleven;
   document.getElementById('cfOpenAI').value=c.openai;
   document.getElementById('cfPexels').value=c.pexels;
