@@ -435,7 +435,7 @@ select option{background:var(--bg3)}
     <div id="gerar-img">
       <div class="grid-2" style="gap:20px;align-items:start">
         <div class="panel">
-          <div class="panel-header"><div class="panel-title">🎨 GERAR IMAGEM COM IMAGEN 4</div></div>
+          <div class="panel-header"><div class="panel-title">🎨 GERAR IMAGEM COM GEMINI</div></div>
           <div class="panel-body" style="display:flex;flex-direction:column;gap:14px">
             <div>
               <div class="label">PROMPT DA IMAGEM</div>
@@ -469,7 +469,7 @@ select option{background:var(--bg3)}
                 <option value="4">4 imagens</option>
               </select>
             </div>
-            <button class="btn btn-accent" style="width:100%;padding:11px" onclick="gerarImagem()" id="btnGerarImg">🎨 Gerar com Imagen 4</button>
+            <button class="btn btn-accent" style="width:100%;padding:11px" onclick="gerarImagem()" id="btnGerarImg">🎨 Gerar Imagem com Gemini</button>
             <div id="imgSt"></div>
           </div>
         </div>
@@ -488,7 +488,7 @@ select option{background:var(--bg3)}
     <div id="gerar-vid" style="display:none">
       <div class="grid-2" style="gap:20px;align-items:start">
         <div class="panel">
-          <div class="panel-header"><div class="panel-title">🎬 GERAR VÍDEO COM VEO3</div></div>
+          <div class="panel-header"><div class="panel-title">🎬 GERAR VÍDEO COM KLING AI</div></div>
           <div class="panel-body" style="display:flex;flex-direction:column;gap:14px">
             <div>
               <div class="label">PROMPT DO VÍDEO</div>
@@ -520,9 +520,9 @@ select option{background:var(--bg3)}
               </select>
             </div>
             <div style="padding:12px;background:rgba(232,255,71,.08);border:1px solid rgba(232,255,71,.2);border-radius:8px;font-size:11px;font-family:var(--mono);color:var(--accent)">
-              ⚡ Veo3 gera vídeos com áudio sincronizado automaticamente. Geração leva 2-5 minutos.
+              ⚡ Kling AI plano free: 66 créditos/mês. Cada vídeo de 5s usa ~10 créditos. Geração leva 2-5 minutos.
             </div>
-            <button class="btn btn-accent" style="width:100%;padding:11px" onclick="gerarVideo()" id="btnGerarVid">🎬 Gerar com Veo3</button>
+            <button class="btn btn-accent" style="width:100%;padding:11px" onclick="gerarVideo()" id="btnGerarVid">🎬 Gerar com Kling AI</button>
             <div id="vidSt"></div>
           </div>
         </div>
@@ -666,6 +666,8 @@ select option{background:var(--bg3)}
         <div class="setting-row"><div><div class="setting-label">OpenAI API Key 📝</div><div class="setting-desc">platform.openai.com → API Keys — Whisper (transcrição e legendas)</div></div><input type="password" id="cfOpenAI" class="setting-input" placeholder="sk-..."></div>
         <div class="setting-row"><div><div class="setting-label">Pexels API Key 🎬</div><div class="setting-desc">pexels.com/api — vídeos gratuitos</div></div><input type="password" id="cfPexels" class="setting-input" placeholder="..."></div>
         <div class="setting-row"><div><div class="setting-label">Pixabay API Key 🎬</div><div class="setting-desc">pixabay.com/api/docs — vídeos gratuitos</div></div><input type="password" id="cfPixabay" class="setting-input" placeholder="..."></div>
+        <div class="setting-row"><div><div class="setting-label">Kling AI API Key 🎬</div><div class="setting-desc">klingai.com → API → Access Key — geração de vídeos</div></div><input type="password" id="cfKling" class="setting-input" placeholder="..."></div>
+        <div class="setting-row"><div><div class="setting-label">Kling AI Access ID 🎬</div><div class="setting-desc">klingai.com → API → Access ID (necessário junto com a key)</div></div><input type="text" id="cfKlingId" class="setting-input" placeholder="..."></div>
         <div class="setting-row"><div><div class="setting-label">YouTube API Key 📤</div><div class="setting-desc">Google Cloud Console → YouTube Data API v3</div></div><input type="password" id="cfYT" class="setting-input" placeholder="AIza..."></div>
       </div>
     </div>
@@ -722,7 +724,7 @@ let st={vid:0,rot:0,nar:0,pub:0};
 
 // CONFIG
 const LS=(k)=>localStorage.getItem('df_'+k)||'';
-const cfg=()=>({claude:LS('claude'),gemini:LS('gemini'),eleven:LS('eleven'),openai:LS('openai'),pexels:LS('pexels'),pixabay:LS('pixabay'),yt:LS('yt'),canal:LS('canal'),nicho:LS('nicho'),idioma:LS('idioma'),cta:LS('cta'),modelo:LS('modelo')});
+const cfg=()=>({claude:LS('claude'),gemini:LS('gemini'),eleven:LS('eleven'),openai:LS('openai'),pexels:LS('pexels'),pixabay:LS('pixabay'),yt:LS('yt'),kling:LS('kling'),klingId:LS('klingId'),canal:LS('canal'),nicho:LS('nicho'),idioma:LS('idioma'),cta:LS('cta'),modelo:LS('modelo')});
 
 function saveConfig(){
   localStorage.setItem('df_claude',document.getElementById('cfClaude').value.trim());
@@ -732,6 +734,8 @@ function saveConfig(){
   localStorage.setItem('df_pexels',document.getElementById('cfPexels').value.trim());
   localStorage.setItem('df_pixabay',document.getElementById('cfPixabay').value.trim());
   localStorage.setItem('df_yt',document.getElementById('cfYT').value.trim());
+  localStorage.setItem('df_kling',document.getElementById('cfKling').value.trim());
+  localStorage.setItem('df_klingId',document.getElementById('cfKlingId').value.trim());
   localStorage.setItem('df_canal',document.getElementById('cfCanal').value.trim());
   localStorage.setItem('df_nicho',document.getElementById('cfNicho').value);
   localStorage.setItem('df_idioma',document.getElementById('cfIdioma').value);
@@ -747,6 +751,8 @@ function loadConfig(){
   document.getElementById('cfPexels').value=c.pexels;
   document.getElementById('cfPixabay').value=c.pixabay;
   document.getElementById('cfYT').value=c.yt;
+  document.getElementById('cfKling').value=c.kling;
+  document.getElementById('cfKlingId').value=c.klingId;
   document.getElementById('cfCanal').value=c.canal;
   updateDots();
 }
@@ -1107,39 +1113,39 @@ async function gerarImagem(){
   const qtd=parseInt(document.getElementById('imgQtd').value);
   const btn=document.getElementById('btnGerarImg');
   btn.disabled=true; btn.textContent='⏳ Gerando...';
-  setSt('imgSt','Gerando com Imagen 4...','loading');
+  setSt('imgSt','Gerando imagem com Gemini...','loading');
   const promptCompleto=`${prompt}, ${estilo}`;
   try{
-    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${c.gemini}`,{
+    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=${c.gemini}`,{
       method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({instances:[{prompt:promptCompleto}],parameters:{sampleCount:qtd,aspectRatio:ratio}})
+      body:JSON.stringify({
+        contents:[{parts:[{text:promptCompleto}]}],
+        generationConfig:{responseModalities:['TEXT','IMAGE']}
+      })
     });
     const d=await r.json();
     if(d.error)throw new Error(d.error.message);
-    const imgs=d.predictions||[];
+    const parts=d.candidates?.[0]?.content?.parts||[];
     const container=document.getElementById('imgResultado');
     container.innerHTML='';
     let count=0;
-    imgs.forEach((pred,i)=>{
-      if(pred.bytesBase64Encoded){
+    parts.forEach((part,i)=>{
+      if(part.inlineData?.mimeType?.startsWith('image/')){
         count++;
-        const src=`data:image/png;base64,${pred.bytesBase64Encoded}`;
+        const src=`data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
         const div=document.createElement('div');
         div.style.cssText='position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--border)';
         div.innerHTML=`
           <img src="${src}" style="width:100%;display:block;border-radius:8px">
           <div style="display:flex;gap:6px;padding:8px">
-            <button class="btn btn-ghost" style="flex:1;font-size:11px;padding:5px" onclick="dlImagem(this)">⬇ Baixar</button>
-            <button class="btn btn-ghost" style="flex:1;font-size:11px;padding:5px" onclick="usarComoThumb(this)">🖼️ Thumb</button>
-            <button class="btn btn-ghost" style="flex:1;font-size:11px;padding:5px" onclick="addImgTimeline(this)">➕ Timeline</button>
+            <button class="btn btn-ghost" style="flex:1;font-size:11px;padding:5px" data-src="${src}" onclick="dlImagem(this)">⬇ Baixar</button>
+            <button class="btn btn-ghost" style="flex:1;font-size:11px;padding:5px" data-src="${src}" onclick="usarComoThumb(this)">🖼️ Thumb</button>
+            <button class="btn btn-ghost" style="flex:1;font-size:11px;padding:5px" data-src="${src}" onclick="addImgTimeline(this)">➕ Timeline</button>
           </div>`;
-        div.querySelector('button:nth-child(1)').dataset.src=src;
-        div.querySelector('button:nth-child(2)').dataset.src=src;
-        div.querySelector('button:nth-child(3)').dataset.src=src;
         container.appendChild(div);
       }
     });
-    if(count===0)throw new Error('Nenhuma imagem retornada. Verifique se a Gemini API Key tem acesso ao Imagen 4.');
+    if(count===0)throw new Error('Nenhuma imagem retornada. Tente um prompt mais detalhado.');
     setSt('imgSt',`${count} imagem(ns) gerada(s)!`,'success');
   }catch(e){setSt('imgSt','Erro: '+e.message,'error');}
   finally{btn.disabled=false; btn.textContent='🎨 Gerar com Imagen 4';}
@@ -1163,7 +1169,7 @@ function addImgTimeline(btn){
 
 async function gerarVideo(){
   const c=cfg();
-  if(!c.gemini){setSt('vidSt','Adicione a Gemini API Key em Configurações','error');return;}
+  if(!c.kling||!c.klingId){setSt('vidSt','Adicione o Kling AI API Key e Access ID em Configurações','error');return;}
   const prompt=document.getElementById('vidPrompt').value.trim();
   if(!prompt){setSt('vidSt','Digite o prompt do vídeo','error');return;}
   const estilo=document.getElementById('vidEstilo').value;
@@ -1171,53 +1177,81 @@ async function gerarVideo(){
   const ratio=document.getElementById('vidRatio').value;
   const btn=document.getElementById('btnGerarVid');
   btn.disabled=true; btn.textContent='⏳ Gerando (2-5 min)...';
-  setSt('vidSt','Enviando para Veo3... aguarde.','loading');
+  setSt('vidSt','Enviando para Kling AI...','loading');
   const promptCompleto=`${prompt}, ${estilo}`;
   try{
-    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-preview:predictLongRunning?key=${c.gemini}`,{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({instances:[{prompt:promptCompleto}],parameters:{aspectRatio:ratio,durationSeconds:parseInt(dur),enhancePrompt:true}})
+    // Gerar JWT token para Kling
+    const token=await gerarKlingToken(c.klingId, c.kling);
+    // Iniciar geração de vídeo
+    const r=await fetch('https://api.klingai.com/v1/videos/text2video',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
+      body:JSON.stringify({
+        model_name:'kling-v1',
+        prompt:promptCompleto,
+        negative_prompt:'blurry, low quality, distorted',
+        cfg_scale:0.5,
+        mode:'std',
+        duration:dur,
+        aspect_ratio:ratio==='16:9'?'16:9':ratio==='9:16'?'9:16':'16:9'
+      })
     });
     const d=await r.json();
-    if(d.error)throw new Error(d.error.message);
-    const operationName=d.name;
-    if(!operationName)throw new Error('Operação não iniciada');
-    setSt('vidSt','Veo3 processando... verificando a cada 15s','loading');
+    if(d.code!==0)throw new Error(d.message||'Erro Kling AI');
+    const taskId=d.data?.task_id;
+    if(!taskId)throw new Error('Task ID não retornado');
+    setSt('vidSt','Kling AI processando... verificando a cada 10s','loading');
+    // Polling
     let attempts=0;
-    const checkStatus=async()=>{
+    const checkKling=async()=>{
       attempts++;
       try{
-        const r2=await fetch(`https://generativelanguage.googleapis.com/v1beta/${operationName}?key=${c.gemini}`);
+        const token2=await gerarKlingToken(c.klingId,c.kling);
+        const r2=await fetch(`https://api.klingai.com/v1/videos/text2video/${taskId}`,{
+          headers:{'Authorization':`Bearer ${token2}`}
+        });
         const d2=await r2.json();
-        if(d2.error)throw new Error(d2.error.message);
-        if(d2.done){
-          const videos=d2.response?.predictions||[];
+        if(d2.code!==0)throw new Error(d2.message);
+        const status=d2.data?.task_status;
+        if(status==='succeed'){
+          const videoUrl=d2.data?.task_result?.videos?.[0]?.url;
+          if(!videoUrl)throw new Error('URL do vídeo não encontrada');
           const container=document.getElementById('vidResultado');
-          if(videos.length>0&&videos[0].bytesBase64Encoded){
-            const src=`data:video/mp4;base64,${videos[0].bytesBase64Encoded}`;
-            container.innerHTML=`
-              <div>
-                <video src="${src}" controls style="width:100%;border-radius:8px;margin-bottom:10px"></video>
-                <div style="display:flex;gap:8px">
-                  <button class="btn btn-ghost" style="flex:1" onclick="const a=document.createElement('a');a.href='${src}';a.download='darkflow_video.mp4';a.click()">⬇ Baixar MP4</button>
-                  <button class="btn btn-ghost" style="flex:1" onclick="clips.push({url:'${src}',name:'video-ia',type:'video',thumb:''});renderTL();notify('Adicionado!','success')">➕ Timeline</button>
-                </div>
-              </div>`;
-            setSt('vidSt','Vídeo gerado com sucesso!','success');
-            btn.disabled=false; btn.textContent='🎬 Gerar com Veo3';
-          } else {
-            throw new Error('Nenhum vídeo retornado');
-          }
-        } else if(attempts<20){
-          setSt('vidSt',`Veo3 processando... ${attempts*15}s / ~120s`,'loading');
-          setTimeout(checkStatus,15000);
+          container.innerHTML=`
+            <div>
+              <video src="${videoUrl}" controls style="width:100%;border-radius:8px;margin-bottom:10px"></video>
+              <div style="display:flex;gap:8px">
+                <a href="${videoUrl}" download="darkflow_video.mp4" class="btn btn-ghost" style="flex:1;text-align:center;text-decoration:none">⬇ Baixar MP4</a>
+                <button class="btn btn-ghost" style="flex:1" onclick="clips.push({url:'${videoUrl}',name:'kling-video',type:'video',thumb:''});renderTL();notify('Adicionado!','success')">➕ Timeline</button>
+              </div>
+            </div>`;
+          setSt('vidSt','Vídeo gerado com sucesso pelo Kling AI!','success');
+          btn.disabled=false; btn.textContent='🎬 Gerar com Kling AI';
+        } else if(status==='failed'){
+          throw new Error('Geração falhou no Kling AI');
+        } else if(attempts<30){
+          setSt('vidSt',`Kling AI processando... ${attempts*10}s`,'loading');
+          setTimeout(checkKling,10000);
         } else {
-          throw new Error('Timeout — geração demorou muito, tente novamente');
+          throw new Error('Timeout — tente novamente');
         }
-      }catch(e){setSt('vidSt','Erro: '+e.message,'error');btn.disabled=false;btn.textContent='🎬 Gerar com Veo3';}
+      }catch(e){setSt('vidSt','Erro: '+e.message,'error');btn.disabled=false;btn.textContent='🎬 Gerar com Kling AI';}
     };
-    setTimeout(checkStatus,15000);
-  }catch(e){setSt('vidSt','Erro: '+e.message,'error');btn.disabled=false;btn.textContent='🎬 Gerar com Veo3';}
+    setTimeout(checkKling,10000);
+  }catch(e){setSt('vidSt','Erro: '+e.message,'error');btn.disabled=false;btn.textContent='🎬 Gerar com Kling AI';}
+}
+
+async function gerarKlingToken(accessKeyId, accessKeySecret){
+  // Gera JWT para autenticação Kling AI
+  const header={alg:'HS256',typ:'JWT'};
+  const now=Math.floor(Date.now()/1000);
+  const payload={iss:accessKeyId,exp:now+1800,nbf:now-5};
+  const b64=s=>btoa(unescape(encodeURIComponent(JSON.stringify(s)))).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
+  const data=b64(header)+'.'+b64(payload);
+  const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(accessKeySecret),{name:'HMAC',hash:'SHA-256'},false,['sign']);
+  const sig=await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(data));
+  const b64sig=btoa(String.fromCharCode(...new Uint8Array(sig))).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
+  return data+'.'+b64sig;
 }
 
 function renderThumb(){
